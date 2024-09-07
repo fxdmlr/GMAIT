@@ -436,3 +436,92 @@ def polydiscDyn(tot_time=600, coeff_range=[1, 10], deg=3):
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def partialFractionGame(number_of_rounds=5, max_deg=4, nrange=[1, 10]):
+    print("For each question, sort the resulting fractions\nby the root of the denominator and write the c-\noefficients in succession without one space be-\ntween them.\n")
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        z = []
+        for j in range(max_deg):
+            x = (-1)**random.randint(1, 2) * random.randint(nrange[0], nrange[1])
+            while x in z:
+                x = (-1)**random.randint(1, 2) * random.randint(nrange[0], nrange[1])
+            z.append(x)
+        z.sort()
+        z.reverse()
+        q = [utils.poly([j, 1]) for j in z]
+        a = 1
+        for j in q:
+            a *= j
+        v = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(len(q))]
+        p = utils.poly([0])
+        for j in range(len(q)):
+            pol_arr = q[:j] + q[j+1:] if j < len(q) - 1 else q[:j]
+            r = utils.poly([1])
+            for k in pol_arr:
+                r *= k
+            p += r*v[j]
+        str1 = str(p)
+        str2 = str(a)
+        str1cpy = str1[:]
+        str2cpy = str2[:]
+        len_measure1 = len(str1cpy.split("\n")[0])
+        len_measure2 = len(str2cpy.split("\n")[0])
+        str3 = "".join(["-" for j in range(max(len_measure1, len_measure2))])
+        print(str1 + "\n" + str3 + "\n" + str2 + "\n")
+        x = input("res : ")
+        if x == " ".join([str(j) for j in v]):
+            pts += 1
+            print("Correct.")
+        else:
+            print("Incorrect. The answer was : ", v)
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]        
+def partialFractionDyn(tot_time=600, max_deg=4, nrange=[1, 10]):
+    print("For each question, sort the resulting fractions\nby the root of the denominator and write the c-\noefficients in succession without one space be-\ntween them.\n")
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        z = []
+        for j in range(max_deg):
+            x = (-1)**random.randint(1, 2) * random.randint(nrange[0], nrange[1])
+            while x in z:
+                x = (-1)**random.randint(1, 2) * random.randint(nrange[0], nrange[1])
+            z.append(x)
+        z.sort()
+        z.reverse()
+        q = [utils.poly([j, 1]) for j in z]
+        a = 1
+        for j in q:
+            a *= j
+        v = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(len(q))]
+        p = utils.poly([0])
+        for j in range(len(q)):
+            pol_arr = q[:j] + q[j+1:] if j < len(q) - 1 else q[:j]
+            r = utils.poly([1])
+            for k in pol_arr:
+                r *= k
+            p += r*v[j]
+        str1 = str(p)
+        str2 = str(a)
+        str1cpy = str1[:]
+        str2cpy = str2[:]
+        len_measure1 = len(str1cpy.split("\n")[0])
+        len_measure2 = len(str2cpy.split("\n")[0])
+        str3 = "".join(["-" for j in range(max(len_measure1, len_measure2))])
+        print(str1 + "\n" + str3 + "\n" + str2 + "\n")
+        x = input("res : ")
+        number_of_rounds += 1
+        end = time.time()
+        if x == " ".join([str(j) for j in v]) and end - start <= tot_time:
+            pts += 1
+            print("Correct.")
+        elif end - start > tot_time:
+            print("Time elapsed before entry.")
+            break
+        else:
+            print("Incorrect. The answer was : ", v)
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]        
