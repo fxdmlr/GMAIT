@@ -61,6 +61,14 @@ def det(array):
             z+=a[i]
         return z
 
+def numericIntegration(function, a, b, dx=0.001):
+    s = 0
+    i = a
+    while i <= b:
+        s += (function(i) + function(i+dx))*dx/2
+        i += dx
+    return s
+
 class integer:
     def __init__(self, n):
         self.n = n
@@ -911,3 +919,118 @@ class matrix:
             arr.append(sub)
         
         return matrix(arr)
+
+def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
+    p = poly([1])
+    p_deg = random.randint(0, deg)
+    q = poly([1])
+    q_deg = random.randint(0, deg)
+    for i in range(p_deg // 2):
+        s1 = random.randint(1, 2) % 2
+        p *= s1 * poly.rand(2, coeff_range=nranges[:]) + (1-s1)*poly.rand(1, coeff_range=nranges[:])*poly.rand(1, coeff_range=nranges[:])
+    for i in range(q_deg // 2):
+        s2 = random.randint(1, 2) % 2
+        q *= s2 * poly.rand(2, coeff_range=nranges[:]) + (1-s2)*poly.rand(1, coeff_range=nranges[:])*poly.rand(1, coeff_range=nranges[:])
+    for i in range(p_deg % 2):
+        p *= poly.rand(1, coeff_range=nranges[:])
+    for i in range(q_deg % 2):
+        q *= poly.rand(1, coeff_range=nranges[:])
+    
+    str1 = str(p)
+    str2 = str(q)
+    str1cpy = str1[:]
+    str2cpy = str2[:]
+    len_measure1 = len(str1cpy.split("\n")[0])
+    len_measure2 = len(str2cpy.split("\n")[0])
+    str3 = "".join(["-" for j in range(max(len_measure1, len_measure2))])
+    z = str1 + "\n" + str3 + "\n" + str2 + "\n"
+    return [p, q, z]
+
+def generate_eulersub(deg=2, nranges=[1, 10]):
+    rat1 = generate_integrable_ratExpr(deg=deg, nranges=nranges[:])
+    sq_term = poly.rand(2, coeff_range=nranges[:])
+    sqf = lambda x : math.sqrt(sq_term(x)) if sq_term(x) > 0 else 1
+    rat2seed = random.randint(1, 2)%2
+    rat2 = (lambda x : sqf(x)) if rat2seed else (lambda x : 1/sqf(x))
+    tot_func = lambda x : (rat1[0](x) / rat1[1](x)) * rat2(x)
+    p1, q1, z1 = rat1[:]
+    z3 = sq_term.pprint()[:]
+    z3_cp2 = ["\\", "/"] + z3[1]
+    z3_cp1 = ["  ", "/"] + z3[0]
+    v = [" " for i in range(len(z3_cp1))]
+    z3_cpy = [
+                [" ", " "] + ["-" for i in range(len(z3[2]) - 2)], 
+                z3_cp1[:],
+                z3_cp2[:],
+                v
+            ]
+    z1, z2 = p1.pprint(), q1.pprint()
+    l1 = max([len("".join(i)) for i in z1])
+    l2 = max([len("".join(i)) for i in z2])
+    l3 = max(l1, l2)
+    p1pprintmod = p1.pprint()[:-1]
+    q1pprintmod = q1.pprint()[:-1]
+    for i in range(len(p1pprintmod)):
+        string = p1pprintmod[i] + [" " for i in range(l3-len("".join(p1pprintmod[i])))]
+        p1pprintmod[i] = string
+        
+    for i in range(len(q1pprintmod)):
+        string = q1pprintmod[i] + [" " for i in range(l3-len("".join(q1pprintmod[i])))]
+        q1pprintmod[i] = string
+    
+    p1pprint = [[" " for i in range(l3)]] + [[" " for i in range(l3)]] + p1pprintmod[:]
+    q1pprint = q1pprintmod[:]+[[" " for i in range(l3)]]
+    ratstr1 = p1pprint + [["-"for i in range(l3)]] + q1pprint
+    ratstr1 = connect([["/"], ["|"], ["|"], ["|"], ["|"], ["|"], ["|"], ["\\"]], ratstr1)
+    ratstr1 = connect(ratstr1, [["\\"], ["|"], ["|"], ["|"], ["|"], ["|"], ["|"], ["/"]])
+    
+    
+    if rat2seed:
+            z3_cpy2 = [
+                v,
+                v,
+                [" ", "  "] + ["-" for i in range(len(z3[2]) - 2)],
+                z3_cp1[:],
+                z3_cp2[:],
+                v,
+                v,
+                v    
+            ]
+            
+            finstr = connect(ratstr1, z3_cpy2)
+            return [tot_func, strpprint(finstr)]
+    
+    else:
+        z3_cpy2 = [
+                v,
+                v,
+                v,
+                [" " for i in range((len(v)-1) // 2)] + ["1"] + [" " for i in range((len(v)-1) // 2 + (len(v)-1) % 2)],
+                ["-" for i in range(len(v))],
+                [" ", "  "] + ["-" for i in range(len(z3[2]) - 2)], 
+                z3_cp1[:],
+                z3_cp2[:],
+            ]
+        finstr = connect(ratstr1, z3_cpy2)
+        return [tot_func, strpprint(finstr)]
+
+def generate_trig(nranges=[1, 10]):
+    a, s, c = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
+    a2, s2, c2 = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
+    a3, t = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
+    modeseed = random.randint(1, 2) % 2
+    if modeseed:
+        p = lambda x : a + s * math.sin(x) + c * math.cos(x)
+        q = lambda x : a2 + s2 * math.sin(x) + c2 * math.cos(x)
+        p_str = "%d + %dsin(x) + %dcos(x)" % (a, s, c)
+        q_str = "%d + %dsin(x) + %dcos(x)" % (a2, s2, c2)
+        return [lambda x : p(x) / q(x), p_str + "\n" + "".join(["-" for i in range(max(len(p_str), len(q_str)))]) + "\n" + q_str]
+    
+    else:
+        l = random.randint(nranges[0], nranges[1])
+        s = random.randint(1, 2) % 2
+        p = lambda x : l / (a3 + t * ((-1)**s) * math.tan(x))
+        q_str = "%d + %dtan(x)"%(a3, t * ((-1)**s)) if not s else "%d - %dtan(x)"%(a3, t)
+        t_str = str(l) + "\n" + "".join(["-" for i in range(max(len(str(l)), len(q_str)))]) + "\n" + q_str
+        return [p, t_str]
+

@@ -18,7 +18,7 @@ import os
 def static():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-Quit\n"))
+    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-Quit\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -224,12 +224,29 @@ def static():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 17:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        c, d = input("Range of bounds of integration (seperated by blank space): ").split(" ")
+        branges = [int(c), int(d)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        mode = int(input("Enter the mode : \n 1-Rational Expressions\n 2-Algebraic Expression\n 3-Trig Expression\n 4-Shuffle\n"))
+        os.system("clear")
+        stats = multgame.integralGame(number_of_rounds=rounds, deg=max_deg, mode=mode, nranges=ranges[:], boundranges=branges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 18:
         return
     
 def dynamic():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-Quit\n"))
+    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-Quit\n"))
     if choice == 1:
         duration = int(input("Time in seconds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -391,6 +408,23 @@ def dynamic():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 13:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        c, d = input("Range of bounds of integration (seperated by blank space): ").split(" ")
+        branges = [int(c), int(d)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        mode = int(input("Enter the mode : \n 1-Rational Expressions\n 2-Algebraic Expression\n 3-Trig Expression\n 4-Shuffle\n"))
+        os.system("clear")
+        stats = multgame.integralGameDyn(tot_time=duration, deg=max_deg, mode=mode, nranges=ranges[:], boundranges=branges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 14:
         return
           
 while True:

@@ -524,4 +524,91 @@ def partialFractionDyn(tot_time=600, max_deg=4, nrange=[1, 10]):
         else:
             print("Incorrect. The answer was : ", v)
     end = time.time()
-    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]        
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+       
+def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.time(), duration=600):
+    pts = 0
+    if mode == 1:
+            p, q, string = utils.generate_integrable_ratExpr(deg, nranges=nranges[:])
+            a, b = random.randint(boundranges[0], boundranges[1]), random.randint(boundranges[0], boundranges[1])
+            res = round(utils.numericIntegration(lambda x : p(x) / q(x), min(a, b), max(a, b)), ndigits=ndigits)
+            print("Evaluate the integral of the function below from %d to %d"%(min(a, b), max(a, b)))
+            print(string)
+            x = float(input("Answer : "))
+            if x == res:
+                if time.time() - start > duration and dyn:
+                    print("Time Elapsed before entry.")
+                    return None
+                print("Correct.")
+                pts += 1
+            else:
+                print("Incorrect. The answer was %f"%res)
+    elif mode == 2:
+        f, string = utils.generate_eulersub(deg, nranges=nranges[:])
+        a, b = random.randint(boundranges[0], boundranges[1]), random.randint(boundranges[0], boundranges[1])
+        res = round(utils.numericIntegration(f, min(a, b), max(a, b)), ndigits=ndigits)
+        print("Evaluate the integral of the function below from %d to %d"%(min(a, b), max(a, b)))
+        print(string)
+        x = float(input("Answer : "))
+        if x == res:
+            if time.time() - start > duration and dyn:
+                print("Time Elapsed before entry.")
+                return None
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was %f"%res)
+    
+    elif mode == 3:
+        f, string = utils.generate_trig(nranges=nranges[:])
+        a, b = random.randint(boundranges[0], boundranges[1]), random.randint(boundranges[0], boundranges[1])
+        res = round(utils.numericIntegration(f, min(a, b), max(a, b)), ndigits=ndigits)
+        print("Evaluate the integral of the function below from %d to %d"%(min(a, b), max(a, b)))
+        print(string)
+        x = float(input("Answer : "))
+        if x == res:
+            if time.time() - start > duration and dyn:
+                print("Time Elapsed before entry.")
+                return None
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was %f"%res)
+    return pts
+
+def integralGame(number_of_rounds=5, deg=2, mode=1, nranges=[1, 10], boundranges=[0, 2], ndigits=2):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        if mode in [1, 2, 3]:
+            pts += subIntGame(mode, deg, nranges, boundranges, ndigits)
+        elif mode == 4:
+            new_mode = random.randint(1, 3)
+            pts += subIntGame(new_mode, deg, nranges, boundranges, ndigits)
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def integralGameDyn(tot_time=600, deg=2, mode=1, nranges=[1, 10], boundranges=[0, 2], ndigits=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        if mode in [1, 2, 3]:
+            z = subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=True, start=start, duration=tot_time)
+            end = time.time()
+            number_of_rounds += 1
+            if z is not None:
+                pts += z
+            else:
+                return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        elif mode == 4:
+            new_mode = random.randint(1, 3)
+            z = subIntGame(new_mode, deg, nranges, boundranges, ndigits, dyn=True, start=start, duration=tot_time)
+            end = time.time()
+            number_of_rounds += 1
+            if z is not None:
+                pts += z
+            else:
+                return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
