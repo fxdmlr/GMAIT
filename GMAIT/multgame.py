@@ -155,10 +155,12 @@ def regMulDyn(total_time=600, nrange=[100, 10000], float_mode=0, after_float_poi
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
         if entry == n1 * n2:
             print("Correct.")
+            print("Remaining time : ", round(total_time - (time.time() - start)))
             pts += 1
         
         else:
             print("Incorrect. The answer was : %f \n" % (n1 * n2))
+            print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -179,10 +181,12 @@ def regMulDynII(total_time=600, nrange=[100, 10000], float_mode=0, after_float_p
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
         if entry == n1 * n2 + n3 * n4:
             print("Correct.")
+            print("Remaining time : ", round(total_time - (time.time() - start)))
             pts += 1
         
         else:
             print("Incorrect. The answer was : %f \n" % (n1 * n2 + n3 * n4))
+            print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -201,9 +205,11 @@ def polyEvalDyn(total_time, deg, coeffs_range, input_range):
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
         if entry == p(x):
             print("Correct.")
+            print("Remaining time : ", round(total_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was : %d"%p(x))
+            print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -223,9 +229,11 @@ def divGameDyn(total_time=600, ranges=[100, 1000], ndigits=5):
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
         if entry == round(n(), ndigits=ndigits):
             print("Correct.")
+            print("Remaining time : ", round(total_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was : %f"%round(n(), ndigits=ndigits))
+            print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -246,9 +254,11 @@ def divGameDynII(total_time=600, ranges=[100, 1000], ndigits=5):
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
         if entry == round(n() + m(), ndigits=ndigits):
             print("Correct.")
+            print("Remaining time : ", round(total_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was : %f"%round(n() + m(), ndigits=ndigits))
+            print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -270,10 +280,12 @@ def mixedArithmeticDyn(total_time, nrange_mul=[100, 1000], nrange_div=[10, 100],
                 return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
             if entry == n1 * n2:
                 print("Correct.")
+                print("Remaining time : ", round(total_time - (time.time() - start)))
                 pts += 1
             
             else:
                 print("Incorrect. The answer was : %f \n" % (n1 * n2))
+                print("Remaining time : ", round(total_time - (time.time() - start)))
         else:
             n = utils.rational.rand(nrange=nrange_div[:])
             string = utils.strpprint(utils.connect(n.pprint(), [["   "], [" = "], ["   "]]))
@@ -285,9 +297,11 @@ def mixedArithmeticDyn(total_time, nrange_mul=[100, 1000], nrange_div=[10, 100],
                 return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
             if entry == round(n(), ndigits=ndigits):
                 print("Correct.")
+                print("Remaining time : ", round(total_time - (time.time() - start)))
                 pts += 1
             else:
                 print("Incorrect. The answer was : %f"%round(n(), ndigits=ndigits))
+                print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -311,10 +325,12 @@ def mixedArithmeticDynII(total_time, nrange_mul=[100, 1000], nrange_div=[10, 100
                 return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
             if entry == n1 * n2 + n3 * n4:
                 print("Correct.")
+                print("Remaining time : ", round(total_time - (time.time() - start)))
                 pts += 1
             
             else:
                 print("Incorrect. The answer was : %f \n" % (n1 * n2 + n3 * n4))
+                print("Remaining time : ", round(total_time - (time.time() - start)))
         else:
             start = time.time()
             pts = 0
@@ -330,9 +346,11 @@ def mixedArithmeticDynII(total_time, nrange_mul=[100, 1000], nrange_div=[10, 100
                 return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
             if entry == round(n() + m(), ndigits=ndigits):
                 print("Correct.")
+                print("Remaining time : ", round(total_time - (time.time() - start)))
                 pts += 1
             else:
                 print("Incorrect. The answer was : %f"%round(n() + m(), ndigits=ndigits))
+                print("Remaining time : ", round(total_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
@@ -386,11 +404,13 @@ def polyrootsDyn(tot_time=600, root_range=[1, 10], deg=3):
         
         if m == res:
             print("Correct.")
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
             pts += 1
         
         else:
             print("Incorrect. The answer was: %d"%res)
             print("The roots were : ", " , ".join([str(i) for i in narr]))
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
@@ -430,10 +450,12 @@ def polydiscDyn(tot_time=600, coeff_range=[1, 10], deg=3):
         
         if m == res:
             print("Correct.")
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
             pts += 1
         
         else:
             print("Incorrect. The answer was: %d"%res)
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
@@ -519,15 +541,17 @@ def partialFractionDyn(tot_time=600, max_deg=4, nrange=[1, 10]):
         if x == " ".join([str(j) for j in v]) and end - start <= tot_time:
             pts += 1
             print("Correct.")
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
         elif end - start > tot_time:
             print("Time elapsed before entry.")
             break
         else:
             print("Incorrect. The answer was : ", v)
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
        
-def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.time(), duration=600):
+def subIntGame(tot_time, mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.time(), duration=600):
     pts = 0
     if mode == 1:
             p, q, string = utils.generate_integrable_ratExpr(deg, nranges=nranges[:])
@@ -541,9 +565,13 @@ def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.t
                     print("Time Elapsed before entry.")
                     return None
                 print("Correct.")
+                if dyn:
+                    print("Remaining time : ", round(tot_time - (time.time() - start)))
                 pts += 1
             else:
                 print("Incorrect. The answer was %f"%res)
+                if dyn:
+                    print("Remaining time : ", round(tot_time - (time.time() - start)))
     elif mode == 2:
         f, string = utils.generate_eulersub(deg, nranges=nranges[:])
         a, b = random.randint(boundranges[0], boundranges[1]), random.randint(boundranges[0], boundranges[1])
@@ -556,9 +584,13 @@ def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.t
                 print("Time Elapsed before entry.")
                 return None
             print("Correct.")
+            if dyn:
+                print("Remaining time : ", round(tot_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was %f"%res)
+            if dyn:
+                print("Remaining time : ", round(tot_time - (time.time() - start)))
     
     elif mode == 3:
         f, string = utils.generate_trig(nranges=nranges[:])
@@ -572,9 +604,13 @@ def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.t
                 print("Time Elapsed before entry.")
                 return None
             print("Correct.")
+            if dyn:
+                print("Remaining time : ", round(tot_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was %f"%res)
+            if dyn:
+                print("Remaining time : ", round(tot_time - (time.time() - start)))
     return pts
 
 def integralGame(number_of_rounds=5, deg=2, mode=1, nranges=[1, 10], boundranges=[0, 2], ndigits=2):
@@ -582,10 +618,10 @@ def integralGame(number_of_rounds=5, deg=2, mode=1, nranges=[1, 10], boundranges
     pts = 0
     for i in range(number_of_rounds):
         if mode in [1, 2, 3]:
-            pts += subIntGame(mode, deg, nranges, boundranges, ndigits)
+            pts += subIntGame(4000, mode, deg, nranges, boundranges, ndigits)
         elif mode == 4:
             new_mode = random.randint(1, 3)
-            pts += subIntGame(new_mode, deg, nranges, boundranges, ndigits)
+            pts += subIntGame(4000, new_mode, deg, nranges, boundranges, ndigits)
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
 
@@ -595,7 +631,7 @@ def integralGameDyn(tot_time=600, deg=2, mode=1, nranges=[1, 10], boundranges=[0
     number_of_rounds = 0
     while time.time() - start <= tot_time:
         if mode in [1, 2, 3]:
-            z = subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=True, start=start, duration=tot_time)
+            z = subIntGame(tot_time, mode, deg, nranges, boundranges, ndigits, dyn=True, start=start, duration=tot_time)
             end = time.time()
             number_of_rounds += 1
             if z is not None:
@@ -604,7 +640,7 @@ def integralGameDyn(tot_time=600, deg=2, mode=1, nranges=[1, 10], boundranges=[0
                 return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
         elif mode == 4:
             new_mode = random.randint(1, 3)
-            z = subIntGame(new_mode, deg, nranges, boundranges, ndigits, dyn=True, start=start, duration=tot_time)
+            z = subIntGame(tot_time, new_mode, deg, nranges, boundranges, ndigits, dyn=True, start=start, duration=tot_time)
             end = time.time()
             number_of_rounds += 1
             if z is not None:

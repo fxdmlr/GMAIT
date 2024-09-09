@@ -38,9 +38,11 @@ def regDetGameDyn(tot_time=600, dims=3, nrange=[10, 100]):
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, tot_time]
         if n == res:
             print("Correct.")
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was %d."%res)
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
     
     end = time.time()
     
@@ -80,9 +82,11 @@ def eigenvalueGameDyn(tot_time=600, dims=3, nrange=[10, 100], ndigits=2):
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, tot_time]
         if n == round(eigens, ndigits):
             print("Correct.")
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
             pts += 1
         else:
             print("Incorrect. The answer was %f."%round(eigens, ndigits))
+            print("Remaining time : ", round(tot_time - (time.time() - start)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]

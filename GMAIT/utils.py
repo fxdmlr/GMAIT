@@ -949,6 +949,8 @@ def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
 def generate_eulersub(deg=2, nranges=[1, 10]):
     rat1 = generate_integrable_ratExpr(deg=deg, nranges=nranges[:])
     sq_term = poly.rand(2, coeff_range=nranges[:])
+    for i in range(len(sq_term.coeffs[:])):
+        sq_term.coeffs[i] = abs(sq_term.coeffs[i])
     sqf = lambda x : math.sqrt(sq_term(x)) if sq_term(x) > 0 else 1
     rat2seed = random.randint(1, 2)%2
     rat2 = (lambda x : sqf(x)) if rat2seed else (lambda x : 1/sqf(x))
