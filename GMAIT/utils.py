@@ -61,7 +61,7 @@ def det(array):
             z+=a[i]
         return z
 
-def numericIntegration(function, a, b, dx=0.001):
+def numericIntegration(function, a, b, dx=0.0001):
     s = 0
     i = a
     while i <= b:

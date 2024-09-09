@@ -2,6 +2,7 @@ import math
 import random
 import time
 import utils
+import evaluator as evl
 
 def regMulGame(number_of_rounds=5, nrange=[100, 10000], float_mode=0, after_float_point=0):
     start = time.time()
@@ -534,7 +535,7 @@ def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.t
             res = round(utils.numericIntegration(lambda x : p(x) / q(x), min(a, b), max(a, b)), ndigits=ndigits)
             print("Evaluate the integral of the function below from %d to %d"%(min(a, b), max(a, b)))
             print(string)
-            x = float(input("Answer : "))
+            x = round(evl.evl(input("Answer : ")), ndigits=ndigits)
             if x == res:
                 if time.time() - start > duration and dyn:
                     print("Time Elapsed before entry.")
@@ -549,7 +550,7 @@ def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.t
         res = round(utils.numericIntegration(f, min(a, b), max(a, b)), ndigits=ndigits)
         print("Evaluate the integral of the function below from %d to %d"%(min(a, b), max(a, b)))
         print(string)
-        x = float(input("Answer : "))
+        x = round(evl.evl(input("Answer : ")), ndigits=ndigits)
         if x == res:
             if time.time() - start > duration and dyn:
                 print("Time Elapsed before entry.")
@@ -565,7 +566,7 @@ def subIntGame(mode, deg, nranges, boundranges, ndigits, dyn=False, start=time.t
         res = round(utils.numericIntegration(f, min(a, b), max(a, b)), ndigits=ndigits)
         print("Evaluate the integral of the function below from %d to %d"%(min(a, b), max(a, b)))
         print(string)
-        x = float(input("Answer : "))
+        x = round(evl.evl(input("Answer : ")), ndigits=ndigits)
         if x == res:
             if time.time() - start > duration and dyn:
                 print("Time Elapsed before entry.")
