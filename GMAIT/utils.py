@@ -1018,19 +1018,31 @@ def generate_trig(nranges=[1, 10]):
     a, s, c = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
     a2, s2, c2 = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
     a3, t = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
-    modeseed = random.randint(1, 2) % 2
-    if modeseed:
+    modeseed = random.randint(1, 3) 
+    if modeseed == 1:
         p = lambda x : a + s * math.sin(x) + c * math.cos(x)
         q = lambda x : a2 + s2 * math.sin(x) + c2 * math.cos(x)
         p_str = "%d + %dsin(x) + %dcos(x)" % (a, s, c)
         q_str = "%d + %dsin(x) + %dcos(x)" % (a2, s2, c2)
         return [lambda x : p(x) / q(x), p_str + "\n" + "".join(["-" for i in range(max(len(p_str), len(q_str)))]) + "\n" + q_str]
     
-    else:
+    elif modeseed == 2:
         l = random.randint(nranges[0], nranges[1])
         s = random.randint(1, 2) % 2
         p = lambda x : l / (a3 + t * ((-1)**s) * math.tan(x))
         q_str = "%d + %dtan(x)"%(a3, t * ((-1)**s)) if not s else "%d - %dtan(x)"%(a3, t)
         t_str = str(l) + "\n" + "".join(["-" for i in range(max(len(str(l)), len(q_str)))]) + "\n" + q_str
         return [p, t_str]
+    
+    elif modeseed == 3:
+        return generate_trig_prod(nranges=nranges[:])
 
+def generate_trig_prod(nranges=[1, 10]):
+    a, b = random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])
+    function = lambda x : (math.sin(x)**a)*(math.cos(x))**b
+    x = [i for i in str(a)] if a != 1 else [" "]
+    y = [i for i in str(b)] if a != 1 else [" "]
+    string_array = [[" ", " ", " "] + x + [" ", " ", " ", " ", " "] + y + [" "],
+                    ["s", "i", "n"] + [" " for i in range(len(str(a)))] + ["x", " "] + ["c", "o", "s"] + [" " for i in range(len(str(b)))] + ["x"]]
+    string = "\n".join(["".join(i) for i in string_array])
+    return [function, string]
