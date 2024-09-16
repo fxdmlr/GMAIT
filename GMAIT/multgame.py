@@ -649,3 +649,45 @@ def integralGameDyn(tot_time=600, deg=2, mode=1, nranges=[1, 10], boundranges=[0
                 return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def regMulGameDig(number_of_rounds=5, digits=5):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        n1 = random.randint(10 ** (digits - 1), 10 ** (digits) - 1) 
+        n2 = random.randint(10 ** (digits - 1), 10 ** (digits) - 1) 
+        entry = int(input("%d * %d = "%(n1, n2))) 
+        if entry == n1 * n2:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was : %f \n" % (n1 * n2))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def regMulDynDig(total_time=600, digits=5):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start < total_time:
+        n1 = random.randint(10 ** (digits - 1), 10 ** (digits) - 1)
+        n2 = random.randint(10 ** (digits - 1), 10 ** (digits) - 1)
+        number_of_rounds += 1
+        entry = int(input("%d * %d = "%(n1, n2))) 
+        end = time.time()
+        if time.time() - start > total_time:
+            print("Time Elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
+        if entry == n1 * n2:
+            print("Correct.")
+            print("Remaining time : ", round(total_time - (time.time() - start)))
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was : %f \n" % (n1 * n2))
+            print("Remaining time : ", round(total_time - (time.time() - start)))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]

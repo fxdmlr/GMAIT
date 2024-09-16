@@ -18,7 +18,7 @@ import os
 def static():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-Quit\n"))
+    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n 19-Quit\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -241,12 +241,21 @@ def static():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 18:
+        rounds = int(input("Number of rounds : "))
+        a = int(input("Number of Digits : "))
+        
+        os.system("clear")
+        stats = multgame.regMulGameDig(number_of_rounds=rounds, digits=a)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    if choice == 19:
         return
     
 def dynamic():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-Quit\n"))
+    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n15-Quit\n"))
     if choice == 1:
         duration = int(input("Time in seconds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -425,6 +434,17 @@ def dynamic():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 14:
+        duration = int(input("Time in seconds : "))
+        a = int(input("Number of digits : "))
+        
+        os.system("clear")
+        stats = multgame.regMulDynDig(total_time=duration, digits=a)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Alotted time : ", stats[-1])
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 15:
         return
           
 while True:
