@@ -691,3 +691,50 @@ def regMulDynDig(total_time=600, digits=5):
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
+
+def fourierSgame(number_of_rounds=5, nranges=[1, 10], deg=2, p_range=[0, 2], exp_cond=False):
+    print("Enter the result accurate to 2 digits after floating point.")
+    start = time.time()
+    pts = 0
+    
+    for i in range(number_of_rounds):
+        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=deg, p_range=p_range, exp_cond=exp_cond)
+        print(string)
+        print("P =", period)
+        x = float(input("a0 + a1 + b1 = "))
+        res = round(round(a_0, ndigits=2) + round(a_n(1), ndigits=2) + round(b_n(1), ndigits=2), ndigits=2)
+        if x == res:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was ", res)
+        
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_cond=False):
+    print("Enter the result accurate to 2 digits after floating point.")
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=deg, p_range=p_range, exp_cond=exp_cond)
+        print(string)
+        print("P =", period)
+        x = float(input("a0 + a1 + b1 = "))
+        number_of_rounds += 1
+        res = round(round(a_0, ndigits=2) + round(a_n(1), ndigits=2) + round(b_n(1), ndigits=2), ndigits=2)
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time Elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, tot_time]
+        if x == res and time.time() - start <= tot_time:
+            print("Correct.")
+            pts += 1     
+        else:
+            print("Incorrect. The answer was ", res)
+        
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+            

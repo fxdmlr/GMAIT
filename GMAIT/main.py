@@ -18,7 +18,7 @@ import os
 def static():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n 19-Quit\n"))
+    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Quit\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -250,12 +250,28 @@ def static():
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))
     if choice == 19:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        c, d = input("Range of period (seperated by blank space): ").split(" ")
+        p_ranges = [int(c), int(d)]
+        
+        max_deg = int(input("Maximum degree : "))
+        exp_cond = int(input("Exponential mode? 1 : Yes\t0 : No "))
+        os.system("clear")
+        stats = multgame.fourierSgame(number_of_rounds=rounds, nranges=ranges[:], deg=max_deg, p_range=p_ranges, exp_cond=exp_cond)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 20:
         return
     
 def dynamic():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n15-Quit\n"))
+    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Quit\n"))
     if choice == 1:
         duration = int(input("Time in seconds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -445,6 +461,22 @@ def dynamic():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 15:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        c, d = input("Range of period (seperated by blank space): ").split(" ")
+        p_ranges = [int(c), int(d)]
+        
+        max_deg = int(input("Maximum degree : "))
+        exp_cond = int(input("Exponential mode? 1 : Yes\t0 : No "))
+        os.system("clear")
+        stats = multgame.fourierSgameDyn(tot_time=duration, nranges=ranges[:], deg=max_deg, p_range=p_ranges, exp_cond=exp_cond)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 16:
         return
           
 while True:

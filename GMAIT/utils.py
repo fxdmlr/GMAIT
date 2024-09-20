@@ -1048,3 +1048,30 @@ def generate_trig_prod(nranges=[1, 10]):
                     ["s", "i", "n"] + [" " for i in range(len(str(a)))] + ["x", " "] + ["c", "o", "s"] + [" " for i in range(len(str(b)))] + ["x"]]
     string = "\n".join(["".join(i) for i in string_array])
     return [function, string]
+
+def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False):
+    p1 = poly.rand(deg, coeff_range=nranges[:])
+    c1 = random.randint(nranges[0], nranges[1])
+    period = 2*random.randint(p_range[0], p_range[1])
+    rand_exp = lambda x : math.exp(c1 * x)
+    f = (lambda x : p1(x) * rand_exp(x))
+    if not exp_cond:
+        f = lambda x : p1(x)
+    a_n_d = lambda n : (lambda x : f(x) * math.cos(2 * n * math.pi * x / period))
+    b_n_d = lambda n : (lambda x : f(x) * math.sin(2 * n * math.pi * x / period)) 
+    a_n = lambda n : numericIntegration(a_n_d(n), -period/2, period/2) / (period/2)
+    b_n = lambda n : numericIntegration(b_n_d(n), -period/2, period/2) / (period/2)
+    a_0 = numericIntegration(f, -period/2, period/2) / period
+    if not exp_cond:
+        return [f, period, a_n, b_n, a_0, strpprint(p1.pprint()), p1, c1]
+    poly_pprint = connect(connect([["/"], ["|"], ["\\"]], p1.pprint()), [["\\"], ["|"], ["/"]])
+    array = [[" "], ["e"], [" "]]
+    for i in str(c1):
+        array[0].append(i)
+    array[0].append("x")
+    for i in range(len(str(c1)) + 1):
+        array[1].append(" ")
+        array[2].append(" ")
+    
+    full_pprint = connect(array, poly_pprint)
+    return [f, period, a_n, b_n, a_0, strpprint(full_pprint), p1, c1]
