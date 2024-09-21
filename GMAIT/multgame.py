@@ -701,8 +701,8 @@ def fourierSgame(number_of_rounds=5, nranges=[1, 10], deg=2, p_range=[0, 2], exp
         f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=deg, p_range=p_range, exp_cond=exp_cond)
         print(string)
         print("P =", period)
-        x = float(input("a0 + a1 + b1 = "))
-        res = round(round(a_0, ndigits=2) + round(a_n(1), ndigits=2) + round(b_n(1), ndigits=2), ndigits=2)
+        x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
+        res = round(a_0 + a_n(1) + b_n(1), ndigits=2)
         if x == res:
             print("Correct.")
             pts += 1
@@ -722,9 +722,9 @@ def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_co
         f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=deg, p_range=p_range, exp_cond=exp_cond)
         print(string)
         print("P =", period)
-        x = float(input("a0 + a1 + b1 = "))
+        x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
         number_of_rounds += 1
-        res = round(round(a_0, ndigits=2) + round(a_n(1), ndigits=2) + round(b_n(1), ndigits=2), ndigits=2)
+        res = round(a_0 + a_n(1) + b_n(1), ndigits=2)
         end = time.time()
         if time.time() - start > tot_time:
             print("Time Elapsed before entry.")

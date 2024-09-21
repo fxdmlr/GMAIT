@@ -248,5 +248,5 @@ def norm_pl(string, var, funcs):# mononominals_normed = [[pow, coef], [pow, coef
     return mononomials_normed
 
 def evl(string):
-    variables = [("pi", math.pi), ("E", math.e)]
+    variables = [("pi", math.pi), ("e", math.e)]
     return evalE(ins_star(string), variables[:], [])
