@@ -698,7 +698,7 @@ def fourierSgame(number_of_rounds=5, nranges=[1, 10], deg=2, p_range=[0, 2], exp
     pts = 0
     
     for i in range(number_of_rounds):
-        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=deg, p_range=p_range, exp_cond=exp_cond)
+        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond)
         print(string)
         print("P =", period)
         x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
@@ -719,7 +719,7 @@ def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_co
     pts = 0
     number_of_rounds = 0
     while time.time() - start <= tot_time:
-        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=deg, p_range=p_range, exp_cond=exp_cond)
+        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond)
         print(string)
         print("P =", period)
         x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
@@ -737,4 +737,155 @@ def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_co
         
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+def string_sgn(x):
+    if x > 0:
+        return "+"
+    elif x < 0:
+        return "-"
+    else:
+        return "0"
+    
+def linearEqSystem(number_of_rounds=5, coeff_abs_ranges=[1, 10], parameters=3, param_abs_ranges=[1, 10]):
+    start = time.time()
+    pts = 0
+    variable_names = ["x", "y", "z", "w", "n", "m", "p", "q", "r", "s", "t"]
+    for i in range(number_of_rounds):
+        answers = [((-1)**random.randint(1, 2)) * random.randint(param_abs_ranges[0], param_abs_ranges[1]) for j in range(parameters)]
+        equations = []
+        rhs = []
+        for j in range(parameters):
+            c_eq = []
+            for k in range(parameters):
+                c_eq.append(((-1)**random.randint(1, 2)) *random.randint(coeff_abs_ranges[0], coeff_abs_ranges[1]))
+            rhs.append(sum([answers[k] * c_eq[k] for k in range(parameters)]))
+            equations.append(c_eq)
+        
+        eq_strings = []
+        for j in range(parameters):
+            c_str = []
+            for k in range(parameters):
+                if equations[j][k] != 0:
+                    if abs(equations[j][k]) != 1:
+                        c_str.append(string_sgn(equations[j][k]))
+                        c_str.append(str(abs(equations[j][k]))+variable_names[k])
+                    else:
+                        c_str.append(string_sgn(equations[j][k]))
+                        c_str.append(variable_names[k])
             
+            if equations[j][0] > 0:
+                c_str.pop(0)
+                        
+            eq_strings.append(" ".join(c_str) + " = " + str(rhs[j]))
+        
+        fin_str = "\n".join(eq_strings)
+        print(fin_str)
+        x = input("x y z ... = ").split(" ")
+        arrs = [int(j) for j in x]
+        if arrs == answers:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answers were : ", ", ".join([variable_names[j] + " = " + str(answers[j]) for j in range(parameters)]))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def linearEqSystem(number_of_rounds=5, coeff_abs_ranges=[1, 10], parameters=3, param_abs_ranges=[1, 10]):
+    start = time.time()
+    pts = 0
+    variable_names = ["x", "y", "z", "w", "n", "m", "p", "q", "r", "s", "t"]
+    for i in range(number_of_rounds):
+        answers = [((-1)**random.randint(1, 2)) * random.randint(param_abs_ranges[0], param_abs_ranges[1]) for j in range(parameters)]
+        equations = []
+        rhs = []
+        for j in range(parameters):
+            c_eq = []
+            for k in range(parameters):
+                c_eq.append(((-1)**random.randint(1, 2)) *random.randint(coeff_abs_ranges[0], coeff_abs_ranges[1]))
+            rhs.append(sum([answers[k] * c_eq[k] for k in range(parameters)]))
+            equations.append(c_eq)
+        
+        eq_strings = []
+        for j in range(parameters):
+            c_str = []
+            for k in range(parameters):
+                if equations[j][k] != 0:
+                    if abs(equations[j][k]) != 1:
+                        c_str.append(string_sgn(equations[j][k]))
+                        c_str.append(str(abs(equations[j][k]))+variable_names[k])
+                    else:
+                        c_str.append(string_sgn(equations[j][k]))
+                        c_str.append(variable_names[k])
+            
+            if equations[j][0] > 0:
+                c_str.pop(0)
+                        
+            eq_strings.append(" ".join(c_str) + " = " + str(rhs[j]))
+        
+        fin_str = "\n".join(eq_strings)
+        print(fin_str)
+        x = input("x y z ... = ").split(" ")
+        arrs = [int(j) for j in x]
+        if arrs == answers:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answers were : ", ", ".join([variable_names[j] + " = " + str(answers[j]) for j in range(parameters)]))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def linearEqSystemDyn(tot_time=600, coeff_abs_ranges=[1, 10], parameters=3, param_abs_ranges=[1, 10]):
+    start = time.time()
+    pts = 0
+    number_of_rounds=0
+    variable_names = ["x", "y", "z", "w", "n", "m", "p", "q", "r", "s", "t"]
+    while time.time()-start <= tot_time:
+        answers = [((-1)**random.randint(1, 2)) * random.randint(param_abs_ranges[0], param_abs_ranges[1]) for j in range(parameters)]
+        equations = []
+        rhs = []
+        for j in range(parameters):
+            c_eq = []
+            for k in range(parameters):
+                c_eq.append(((-1)**random.randint(1, 2)) *random.randint(coeff_abs_ranges[0], coeff_abs_ranges[1]))
+            rhs.append(sum([answers[k] * c_eq[k] for k in range(parameters)]))
+            equations.append(c_eq)
+        
+        eq_strings = []
+        for j in range(parameters):
+            c_str = []
+            for k in range(parameters):
+                if equations[j][k] != 0:
+                    if abs(equations[j][k]) != 1:
+                        c_str.append(string_sgn(equations[j][k]))
+                        c_str.append(str(abs(equations[j][k]))+variable_names[k])
+                    else:
+                        c_str.append(string_sgn(equations[j][k]))
+                        c_str.append(variable_names[k])
+            
+            if equations[j][0] > 0:
+                c_str.pop(0)
+                        
+            eq_strings.append(" ".join(c_str) + " = " + str(rhs[j]))
+        
+        fin_str = "\n".join(eq_strings)
+        print(fin_str)
+        x = input("x y z ... = ").split(" ")
+        number_of_rounds += 1
+        arrs = [int(j) for j in x]
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if arrs == answers:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answers were : ", ", ".join([variable_names[j] + " = " + str(answers[j]) for j in range(parameters)]))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]

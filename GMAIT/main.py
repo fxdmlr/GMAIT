@@ -18,7 +18,7 @@ import os
 def static():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Quit\n"))
+    choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -254,7 +254,7 @@ def static():
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
         ranges = [int(a), int(b)]
         
-        c, d = input("Range of period (seperated by blank space): ").split(" ")
+        c, d = input("Range of half period (seperated by blank space): ").split(" ")
         p_ranges = [int(c), int(d)]
         
         max_deg = int(input("Maximum degree : "))
@@ -266,12 +266,28 @@ def static():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 20:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of coeffs (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        c, d = input("Range of answers (seperated by blank space): ").split(" ")
+        param_ranges = [int(c), int(d)]
+        parameters = int(input("Number of unknowns : "))
+        os.system("clear")
+        stats = multgame.linearEqSystem(number_of_rounds=rounds, coeff_abs_ranges=ranges[:], parameters=parameters, param_abs_ranges=param_ranges[:])
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2])) 
+    
+    if choice == 21:
         return
     
 def dynamic():
     os.system("clear")
     print("\n")
-    choice = int(input("Enter the desired mode :\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Quit\n"))
+    choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n"))
+    if choice == 0:
+        return
+    
     if choice == 1:
         duration = int(input("Time in seconds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -465,7 +481,7 @@ def dynamic():
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
         ranges = [int(a), int(b)]
         
-        c, d = input("Range of period (seperated by blank space): ").split(" ")
+        c, d = input("Range of half period (seperated by blank space): ").split(" ")
         p_ranges = [int(c), int(d)]
         
         max_deg = int(input("Maximum degree : "))
@@ -477,7 +493,17 @@ def dynamic():
         print("Time spent per item : ", round(stats[2]))
     
     if choice == 16:
-        return
+        duration = int(input("Duration : "))
+        a, b = input("Range of coeffs (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        c, d = input("Range of answers (seperated by blank space): ").split(" ")
+        param_ranges = [int(c), int(d)]
+        parameters = int(input("Number of unknowns : "))
+        os.system("clear")
+        stats = multgame.linearEqSystemDyn(tot_time=duration, coeff_abs_ranges=ranges[:], parameters=parameters, param_abs_ranges=param_ranges[:])
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
           
 while True:
     mode = int(input("Mode :\n 1-Static \n 2-Dynamic\n 3-Quit\n"))
