@@ -15,10 +15,13 @@ import multgame
 import matrixgames
 import os
 
-def static():
+def static(prechoice=None):
     os.system("clear")
+    if prechoice is not None:
+        choice = prechoice
     print("\n")
-    choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n"))
+    if prechoice is None:
+        choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n21-Mean\n22-Stdev\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -279,12 +282,37 @@ def static():
         print("Time spent per item : ", round(stats[2])) 
     
     if choice == 21:
-        return
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("N : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.meanGame(number_of_rounds=rounds, nrange=ranges, n=max_deg, ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    if choice == 22:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("N : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.stdevGame(number_of_rounds=rounds, nrange=ranges, n=max_deg, ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
     
-def dynamic():
+def dynamic(prechoice=None):
     os.system("clear")
+    if prechoice is not None:
+        choice = prechoice
     print("\n")
-    choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n"))
+    if prechoice is None:
+        choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n 17-Mean\n 18-Stdev\n "))
     if choice == 0:
         return
     
@@ -504,9 +532,43 @@ def dynamic():
         print("Score : ", round(stats[0]))
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 17:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("N : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.meanGameDyn(tot_time=duration, nrange=ranges, n=max_deg, ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+        
+    if choice == 18:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("N : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.stdevGameDyn(tot_time=duration, nrange=ranges, n=max_deg, ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
           
 while True:
     mode = int(input("Mode :\n 1-Static \n 2-Dynamic\n 3-Quit\n"))
+    mode_str = str(mode)
+    if len(mode_str) > 1:
+        if mode_str[0] == "1":
+            static(prechoice=int(mode_str[1:]))
+        elif mode_str[0] == "2":
+            dynamic(prechoice=int(mode_str[1:]))
+        else:
+            break
     if mode == 1:
         static()
     elif mode == 2:

@@ -3,6 +3,7 @@ import random
 import time
 import utils
 import evaluator as evl
+import statistics as st
 
 def regMulGame(number_of_rounds=5, nrange=[100, 10000], float_mode=0, after_float_point=0):
     start = time.time()
@@ -886,6 +887,92 @@ def linearEqSystemDyn(tot_time=600, coeff_abs_ranges=[1, 10], parameters=3, para
         
         else:
             print("Incorrect. The answers were : ", ", ".join([variable_names[j] + " = " + str(answers[j]) for j in range(parameters)]))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def meanGame(number_of_rounds=5, nrange=[1, 10], n=10, ndigits=2):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        array = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(n)]
+        m = round(st.mean(array[:]), ndigits=ndigits)
+        print(", ".join([str(j) for j in array]))
+        x = float(input("Avg = "))
+        if x == m:
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was ", m)
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def stdevGame(number_of_rounds=5, nrange=[1, 10], n=10, ndigits=2):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        array = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(n)]
+        m = round(st.stdev(array[:]), ndigits=ndigits)
+        print(", ".join([str(j) for j in array]))
+        x = float(input("S = "))
+        if x == m:
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was ", m)
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def meanGameDyn(tot_time=600, nrange=[1, 10], n=10, ndigits=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while(time.time() - start <= tot_time):
+        array = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(n)]
+        m = round(st.mean(array[:]), ndigits=ndigits)
+        print(", ".join([str(i) for i in array]))
+        x = float(input("Avg = "))
+        number_of_rounds += 1
+        end = time.time()
+        if end - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if x == m:
+            print("Correct.")
+            print("Time remaining : ", round(tot_time - end + start))
+            pts += 1
+        else:
+            print("Incorrect. The answer was ", m)
+            print("Time remaining : ", round(tot_time - end + start))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def stdevGameDyn(tot_time=600, nrange=[1, 10], n=10, ndigits=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while(time.time() - start <= tot_time):
+        array = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(n)]
+        m = round(st.stdev(array[:]), ndigits=ndigits)
+        print(", ".join([str(i) for i in array]))
+        x = float(input("S = "))
+        number_of_rounds += 1
+        end = time.time()
+        if end - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if x == m:
+            print("Correct.")
+            print("Time remaining : ", round(tot_time - end + start))
+            pts += 1
+        else:
+            print("Incorrect. The answer was ", m)
+            print("Time remaining : ", round(tot_time - end + start))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
