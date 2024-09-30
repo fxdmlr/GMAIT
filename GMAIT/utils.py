@@ -61,13 +61,18 @@ def det(array):
             z+=a[i]
         return z
 
-def numericIntegration(function, a, b, dx=0.0001):
+def numericIntegration(function, c, d, dx=0.0001):
     s = 0
+    a = min(c, d)
+    b = max(c, d)
     i = a
     while i <= b:
         s += (function(i) + function(i+dx))*dx/2
         i += dx
-    return s
+    return s * sgn(d - c)
+
+def numericDiff(function, x, dx=0.0001):
+    return (function(x+dx) - function(x-dx))/(2*dx)
 
 class integer:
     def __init__(self, n):
@@ -1075,3 +1080,66 @@ def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False):
     
     full_pprint = connect(array, poly_pprint)
     return [f, period, a_n, b_n, a_0, strpprint(full_pprint), p1, c1]
+
+def fourier_s_poly(p1, p_range=[1, 5]):
+    period = 2*random.randint(p_range[0], p_range[1])
+    f = lambda x : p1(x)
+    a_n_d = lambda n : (lambda x : f(x) * math.cos(2 * n * math.pi * x / period))
+    b_n_d = lambda n : (lambda x : f(x) * math.sin(2 * n * math.pi * x / period)) 
+    a_n = lambda n : numericIntegration(a_n_d(n), -period/2, period/2) / (period/2)
+    b_n = lambda n : numericIntegration(b_n_d(n), -period/2, period/2) / (period/2)
+    a_0 = numericIntegration(f, -period/2, period/2) / period
+    return [period, a_n, b_n, a_0]
+
+def randFunction(nranges=[1, 10], n=2, max_deg=2):
+    functions = [(math.sin, [[" ", " ", " ", " ", " ", " "], ["s", "i", "n", "(", "x", ")"], [" ", " ", " ", " ", " ", " "]]), 
+                 (math.cos, [[" ", " ", " ", " ", " ", " "], ["c", "o", "s", "(", "x", ")"], [" ", " ", " ", " ", " ", " "]]), 
+                 (math.exp, [[" ", "x"], ["e"," "], [" ", " "]])]
+    return functions[random.randint(0, len(functions) - 1)]
+
+
+def runge_kutta_2nd(coeffs, function, start, step, init_vals):
+    '''
+    init_vals = [y(x0), y'(x0)]
+    '''
+    def f(x):
+        z_i = init_vals[-1]
+        y_i = init_vals[0]
+        x_i = start
+        while x_i < x:
+            k1 = step * z_i
+            L1 = step * (1/coeffs[-1]) * (function(x_i) - coeffs[0] - coeffs[1]*y_i)
+            
+            k2 = step * (z_i+L1/2)
+            L2 = step * (1/coeffs[-1]) * (function(x_i+step/2) - coeffs[0] - coeffs[1]*(y_i + k1/2))
+            
+            k3 = step * (z_i + L2/2)
+            L3 = step * (1/coeffs[-1]) * (function(x_i+step/2) - coeffs[0] - coeffs[1]*(y_i + k2/2))
+            
+            k4 = step * (z_i + L3)
+            L4 = step * (1/coeffs[-1]) * (function(x_i+step) - coeffs[0] - coeffs[1]*(y_i + k3))
+            
+            y_i += (1/6)*(L1+2*L2+2*L3+L4)
+            z_i += (1/6)*(k1+2*k2+2*k3+k4)
+            x_i += step
+        return y_i
+    
+    return f
+def random_diff_eq_2(nranges=[1, 10], n=2, max_deg=2):
+    coeffs = [random.randint(nranges[0], nranges[1]) * (-1)**random.randint(0, 1) for i in range(3)]
+    ppr = [[], [], []]
+    for i in range(len(coeffs) - 1, -1, -1):
+        if coeffs[i] != 0:
+            if abs(coeffs[i]) != 1:
+                ppr = connect(ppr[:], [[" " for j in range(len(str(abs(coeffs[i]))) + 2)]+["'" for j in range(i)],["+" if coeffs[i] > 0 else "-"]+[j for j in str(abs(coeffs[i]))] + ["y"] + [" " for j in range(i)], [" " for j in range(len(str(abs(coeffs[i]))) + i + 2)]])[:]
+            else:
+                ppr = connect(ppr[:], [[" " for j in range(1+ 2)]+["'" for j in range(i)],["+" if coeffs[i] > 0 else "-"]+ ["y"] + [" " for j in range(i)], [" " for j in range(i + 3)]])[:]  
+    ppr = connect(ppr[:], [["   "], [" = "], ["   "]])
+    f, pprint_s = randFunction(nranges=nranges[:], n=n, max_deg=max_deg) if random.randint(0, 1) else ((lambda x : 1), [[], [], []])
+    h = poly.rand(random.randint(0, max_deg), coeff_range=nranges[:])
+    s = h.pprint()
+    fin_ppr = connect(ppr[:], connect(pprint_s[:], connect([[" "], ["("], [" "]], connect(s, [[" "], [")"], [" "]]))))
+    init_vals = [random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])]
+    fin_func = runge_kutta_2nd(coeffs, lambda x : h(x) * f(x), 0, 0.000001, init_vals[:])
+    return fin_func, strpprint(fin_ppr), init_vals
+

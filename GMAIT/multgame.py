@@ -28,7 +28,11 @@ def polyMulGame(number_of_rounds=5, max_deg=5, nrange=[10, 100]):
     for i in range(number_of_rounds):
         p1 = utils.poly.rand(random.randint(1, max_deg), coeff_range=nrange[:]) 
         p2 = utils.poly.rand(random.randint(1, max_deg), coeff_range=nrange[:]) 
-        wentry = input("(%s) * (%s) = "%(str(p1), str(p2))).split(" ") 
+        q = utils.connect([[" "], ["("], [" "]], utils.connect(p1.pprint(), [[" "], [")"], [" "]]))
+        r = utils.connect([[" "], ["("], [" "]], utils.connect(p2.pprint(), [[" "], [")"], [" "]]))
+        s = utils.strpprint(utils.connect(q, utils.connect([[" "], [" "], [" "]], r)))
+        print(s)
+        wentry = input("Res = ").split(" ") 
         entry = [int(i) for i in wentry]
         entry.reverse()
         entry_poly = utils.poly(entry[:]) 
@@ -37,7 +41,7 @@ def polyMulGame(number_of_rounds=5, max_deg=5, nrange=[10, 100]):
             pts += 1
         
         else:
-            print("Incorrect. The answer was : %s \n" % str(p1 * p2))
+            print("Incorrect. The answer was :\n %s \n" % str(p1 * p2))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
@@ -136,7 +140,7 @@ def polyDivGame(number_of_rounds=5, max_deg=5, nrange=[10, 100], ndigits = 2):
             pts += 1
         
         else:
-            print("Incorrect. The answer was : %s \n" % str(round(p1 / p2, ndigits=ndigits)))
+            print("Incorrect. The answer was :\n %s \n" % str(round(p1 / p2, ndigits=ndigits)))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
@@ -975,4 +979,99 @@ def stdevGameDyn(tot_time=600, nrange=[1, 10], n=10, ndigits=2):
             print("Time remaining : ", round(tot_time - end + start))
     
     end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def diffeq(number_of_rounds=5, nranges=[1, 10], max_deg=2):
+    start = time.time()
+    pts = 0
+    
+    for i in range(number_of_rounds):
+        f, s, iv = utils.random_diff_eq_2(nranges=nranges, n=random.randint(0, 1), max_deg=max_deg)
+        z = round(random.random(), ndigits=2)
+        print("y(0) = ", iv[0])
+        print("y'(0) = ", iv[1])
+        print(s)
+        x = float(input("y(%f) = "%z))
+        if f(z) * 0.8 <round(x, ndigits=2)< f(z)*1.2:
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was : ", f(z), "+-20%")
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def diffeqDyn(duration=600, nranges=[1, 10], max_deg=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= duration:
+        f, s, iv = utils.random_diff_eq_2(nranges=nranges, n=random.randint(0, 1), max_deg=max_deg)
+        z = round(random.random(), ndigits=2)
+        print("y(0) = ", iv[0])
+        print("y'(0) = ", iv[1])
+        print(s)
+        x = float(input("y(%f) = "%z))
+        number_of_rounds += 1
+        end = time.time()
+        if time.time() - start > duration:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+            
+        if f(z) * 0.8 <round(x, ndigits=2)< f(z)*1.2:
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was : ", f(z), "+-20%")
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def polyDetFourierGame(number_of_rounds=5, dims=3, nrange=[10, 100], max_deg=2, zrange=[1, 5]):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        m = utils.matrix.randpoly(dims=[dims, dims], max_deg=max_deg, coeff_range=nrange[:])
+        res = m.det()
+        period, a_n, b_n, a_0 = utils.fourier_s_poly(res, p_range=zrange[:])
+        print("2L = ", period)
+        a, b = a_n(1), b_n(1)
+        print(str(m))
+        x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
+        
+        if x == round(a+b+a_0, ndigits=2):
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was %f."%(a + b + a_0))
+    
+    end = time.time()
+    
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def polyDetFourierGameDyn(duration=600, dims=3, nrange=[10, 100], max_deg=2, zrange=[1, 100]):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= duration:
+        m = utils.matrix.randpoly(dims=[dims, dims], max_deg=max_deg, coeff_range=nrange[:])
+        res = m.det()
+        period, a_n, b_n, a_0 = utils.fourier_s_poly(res, p_range=zrange[:])
+        print("2L = ", period)
+        a, b = a_n(1), b_n(1)
+        print(str(m))
+        x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
+        end = time.time()
+        number_of_rounds += 1
+        if end - start > duration:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        if x == round(a+b+a_0, ndigits=2):
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was %f."%(a + b + a_0))
+    
+    end = time.time()
+    
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]

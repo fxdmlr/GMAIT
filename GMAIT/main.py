@@ -21,7 +21,7 @@ def static(prechoice=None):
         choice = prechoice
     print("\n")
     if prechoice is None:
-        choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n21-Mean\n22-Stdev\n"))
+        choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n21-Mean\n22-Stdev\n23-diffeq\n24-polyDetFourier\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -306,13 +306,38 @@ def static(prechoice=None):
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))
     
+    if choice == 23:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        os.system("clear")
+        stats = multgame.diffeq(number_of_rounds=rounds, nranges=ranges[:], max_deg=max_deg)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 24:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        dims = int(input("Dims : "))
+        
+        max_deg = int(input("Maximum degree : "))
+        os.system("clear")
+        stats = multgame.polyDetFourierGame(number_of_rounds=rounds, dims=dims, nrange=ranges, max_deg=max_deg)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
 def dynamic(prechoice=None):
     os.system("clear")
     if prechoice is not None:
         choice = prechoice
     print("\n")
     if prechoice is None:
-        choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n 17-Mean\n 18-Stdev\n "))
+        choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n 17-Mean\n 18-Stdev\n 19-diffeq\n 20-PolyDet\n 21-PolyDetFourier\n"))
     if choice == 0:
         return
     
@@ -555,6 +580,44 @@ def dynamic(prechoice=None):
         ndigits = int(input("Digits after floating point : "))
         os.system("clear")
         stats = multgame.stdevGameDyn(tot_time=duration, nrange=ranges, n=max_deg, ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 19:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        os.system("clear")
+        stats = multgame.diffeqDyn(duration=duration, nranges=ranges[:], max_deg=max_deg)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 20:
+        duration = int(input("duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        dims = int(input("Dims : "))
+        
+        max_deg = int(input("Maximum degree : "))
+        os.system("clear")
+        stats = matrixgames.polyDetGameDyn(duration=duration, dims=dims, nrange=ranges, max_deg=max_deg)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 21:
+        duration = int(input("duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        dims = int(input("Dims : "))
+        
+        max_deg = int(input("Maximum degree : "))
+        os.system("clear")
+        stats = multgame.polyDetFourierGameDyn(duration=duration, dims=dims, nrange=ranges, max_deg=max_deg)
         print("Score : ", round(stats[0]))
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))

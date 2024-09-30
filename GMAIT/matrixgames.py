@@ -98,9 +98,34 @@ def polyDetGame(number_of_rounds=5, dims=3, nrange=[10, 100], max_deg=2, zrange=
         m = utils.matrix.randpoly(dims=[dims, dims], max_deg=max_deg, coeff_range=nrange[:])
         res = m.det()
         print(str(m))
-        z = random.randint(zrange[0], zrange[1])
+        z = random.randint(nrange[0], nrange[1])
         n = int(input("Evaluate the determinant at x = %d "%z))
         
+        if n == res(z):
+            print("Correct.")
+            pts += 1
+        else:
+            print("Incorrect. The answer was %d."%res(z))
+    
+    end = time.time()
+    
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def polyDetGameDyn(duration=600, dims=3, nrange=[10, 100], max_deg=2, zrange=[1, 100]):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= duration:
+        m = utils.matrix.randpoly(dims=[dims, dims], max_deg=max_deg, coeff_range=nrange[:])
+        res = m.det()
+        print(str(m))
+        z = random.randint(nrange[0], nrange[1])
+        n = int(input("Evaluate the determinant at x = %d "%z))
+        number_of_rounds += 1
+        end = time.time()
+        if end - start > duration:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
         if n == res(z):
             print("Correct.")
             pts += 1
@@ -169,3 +194,4 @@ def polyMulGame(number_of_rounds=5, dims=3, nrange=[10, 100], max_deg=2, zrange=
     end = time.time()
     
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
