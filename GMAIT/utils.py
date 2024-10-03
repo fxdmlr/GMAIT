@@ -2,6 +2,7 @@ import math
 import random
 import cmath
 
+DEFAULT_TAYLOR_N = 1000
 
 def minor(array, pos):
     new_arr = []
@@ -17,6 +18,13 @@ def minor(array, pos):
         new_arr.append(col)
 
     return new_arr
+
+def dot(arr1, arr2):
+    s = 0
+    for i in range(len(arr1)):
+        s += arr1[i] * arr2[i]
+    
+    return s
 
 def sgn(x):
     return x >= 0 if not callable(x) else x() >= 0
@@ -534,6 +542,8 @@ class poly:
         lines = [[], [], []]
         for i in range(len(new_array)):
             temp_lines1 = [[" "], ["+" if sgn(new_array[i]) else "-"], [" "]]
+            if new_array[i] == 0:
+                continue
             if not isinstance(new_array[i], rational):
                 if i == self.deg:
                     temp_lines2 = connect(temp_lines1, [[" " for i in range(len(str(new_array[i])))], [str(abs(new_array[i]))], [" " for i in range(len(str(new_array[i])))]])
@@ -685,14 +695,18 @@ class poly:
 
     def __round__(self, ndigits = 3):
         return poly([round(i, ndigits=ndigits) for i in self.coeffs])
-
-
-        
     
     def diff(self):
         array = []
         for i in range(1, len(self.coeffs)):
             array.append(i * self.coeffs[i])
+        
+        return poly(array)
+    
+    def integral(self, c):
+        array = [c]
+        for i in range(len(self.coeffs)):
+            array.append(self.coeffs[i] / (i + 1))
         
         return poly(array)
     
@@ -767,6 +781,96 @@ class poly:
                 break
         
         return x_i
+
+class PowSeries:
+    def __init__(self, c_n):
+        self.function = c_n
+    
+    def poly(self, n):
+        return poly([self.function(i) for i in range(n + 1)])
+    
+    def __call__(self, x, n=DEFAULT_TAYLOR_N):
+        return self.poly(n)(x)
+
+    def diff(self):
+        new_function = lambda n : self.function(n+1) * (n+1)
+        return PowSeries(new_function)
+    
+    def integrate(self):
+        new_function = lambda n : self.function(n-1) /(n) if n != 0 else 0
+        return PowSeries(new_function)
+    
+    def __add__(self, other):
+        if isinstance(other, (int, float, poly)):
+            other_pol = other
+            if isinstance(other, (int, float)):
+                other_pol = poly([other])
+            
+            new_cn = lambda n : self.function(n) + other.coeffs[n] if n <= other.deg else self.function(n)
+            return PowSeries(new_cn)
+        else:
+            new_cn = lambda n : self.function(n) + other.function(n) 
+            return PowSeries(new_cn)
+    
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            new_cn = lambda n : other * self.function(n)
+            return PowSeries(new_cn)
+        
+        elif isinstance(other, poly):
+            new_cn = lambda n : sum([self.function(n - i) * other.coeffs[i] for i in range(min(other.deg + 1, n+1))])
+            return PowSeries(new_cn)
+        
+        else:
+            new_cn = lambda n : sum([self.function(n - i) * other.function(i) for i in range(n+1)])
+            return PowSeries(new_cn)
+    
+    def __neg__(self):
+        return PowSeries(lambda n : -self.function(n))
+    
+    def __sub__(self, other):
+        return self + (-other)
+    
+    __radd__ = __add__
+    __rmul__ = __mul__
+    
+def solveDEseries(coeffs, rhs, init_val, n):
+    '''
+    coeffs = [1, 2, 3]
+    rhs = PowSeries
+    
+    1y+2y'+3y''=rhs
+    ans = a1c_{n-2} + a2c_{n-1} + a3c_{n}... -> [a3, a2, a1]
+    
+    init_val = [1, 2, 3, 4, ...]
+    c0 = 1; c1 = 2; c2 = 3; c3 = 4; ...
+    '''
+    deg = len(coeffs) - 1
+    k = 0
+    vals = init_val[:]
+    v_array = vals[:]
+    while k < n:
+        arr = [coeffs[i] * math.factorial(k+i)/math.factorial(k) for i in range(deg + 1)]
+        x = dot(arr[:-1], vals[:])
+        new_n = (rhs.function(k)-x)/arr[-1]
+        v_array.append(new_n)
+        new_vals = vals[1:] + [new_n]
+        vals = new_vals[:]
+        k+=1
+    
+    return v_array[:]
+    
+
+    
+        
+SIN = PowSeries(lambda n : (n%2) * (-1)**int((n-1)/2)/(math.factorial(n)))
+COS = PowSeries(lambda n : (1-n%2) * (-1)**int(n/2)/math.factorial(n))
+EXP = PowSeries(lambda n : 1/math.factorial(n))
+EXP_ = PowSeries(lambda n : (-1)**n/math.factorial(n))
+LOG_1_X = PowSeries(lambda n : -1/n if n != 0 else 0)
+SINH = (1/2) * (EXP - EXP_)
+COSH = (1/2) * (EXP + EXP_)
+
 
 class matrix:
     def __init__(self, array):
@@ -924,7 +1028,8 @@ class matrix:
             arr.append(sub)
         
         return matrix(arr)
-
+        
+        
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)
@@ -1092,9 +1197,9 @@ def fourier_s_poly(p1, p_range=[1, 5]):
     return [period, a_n, b_n, a_0]
 
 def randFunction(nranges=[1, 10], n=2, max_deg=2):
-    functions = [(math.sin, [[" ", " ", " ", " ", " ", " "], ["s", "i", "n", "(", "x", ")"], [" ", " ", " ", " ", " ", " "]]), 
-                 (math.cos, [[" ", " ", " ", " ", " ", " "], ["c", "o", "s", "(", "x", ")"], [" ", " ", " ", " ", " ", " "]]), 
-                 (math.exp, [[" ", "x"], ["e"," "], [" ", " "]])]
+    functions = [(SINH, [[" ", " ", " ", " ", " ", " ", " "], ["s", "i", "n", "h", "(", "x", ")"], [" ", " ", " ", " ", " ", " ", " "]]), 
+                 (COSH, [[" ", " ", " ", " ", " ", " ", " "], ["c", "o", "s", "h", "(", "x", ")"], [" ", " ", " ", " ", " ", " ", " "]]), 
+                 (EXP, [[" ", "x"], ["e"," "], [" ", " "]])]
     return functions[random.randint(0, len(functions) - 1)]
 
 
@@ -1135,11 +1240,11 @@ def random_diff_eq_2(nranges=[1, 10], n=2, max_deg=2):
             else:
                 ppr = connect(ppr[:], [[" " for j in range(1+ 2)]+["'" for j in range(i)],["+" if coeffs[i] > 0 else "-"]+ ["y"] + [" " for j in range(i)], [" " for j in range(i + 3)]])[:]  
     ppr = connect(ppr[:], [["   "], [" = "], ["   "]])
-    f, pprint_s = randFunction(nranges=nranges[:], n=n, max_deg=max_deg) if random.randint(0, 1) else ((lambda x : 1), [[], [], []])
+    f, pprint_s = randFunction(nranges=nranges[:], n=n, max_deg=max_deg) if random.randint(0, 1) else (PowSeries(lambda n : 1 if n == 0 else 0), [[], [], []])
     h = poly.rand(random.randint(0, max_deg), coeff_range=nranges[:])
     s = h.pprint()
     fin_ppr = connect(ppr[:], connect(pprint_s[:], connect([[" "], ["("], [" "]], connect(s, [[" "], [")"], [" "]]))))
     init_vals = [random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])]
-    fin_func = runge_kutta_2nd(coeffs, lambda x : h(x) * f(x), 0, 0.000001, init_vals[:])
+    n = f * h
+    fin_func = poly(solveDEseries(coeffs, n, init_vals, 10))
     return fin_func, strpprint(fin_ppr), init_vals
-

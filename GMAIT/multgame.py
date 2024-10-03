@@ -1018,11 +1018,11 @@ def diffeqDyn(duration=600, nranges=[1, 10], max_deg=2):
             print("Time elapsed before entry.")
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
             
-        if f(z) * 0.8 <round(x, ndigits=2)< f(z)*1.2:
+        if f(z) == round(x, ndigits=2):
             print("Correct.")
             pts += 1
         else:
-            print("Incorrect. The answer was : ", f(z), "+-20%")
+            print("Incorrect. The answer was : ", round(f(z), ndigits=2))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
