@@ -50,6 +50,11 @@ def connect(arr1, arr2):
     
     return arr3[:]
 
+def cross(v, u):
+    i = det([[1, 0, 0], v[:], u[:]])
+    j = det([[0, 1, 0], v[:], u[:]])
+    k = det([[0, 0, 1], v[:], u[:]])
+    return [i, j, k]
 
 def det(array):
     if len(array) == 1:
@@ -80,7 +85,7 @@ def numericIntegration(function, c, d, dx=0.0001):
     return s * sgn(d - c)
 
 def numericDiff(function, x, dx=0.0001):
-    return (function(x+dx) - function(x-dx))/(2*dx)
+    return (function(x+dx) - function(x-dx))* (1/(2*dx))
 
 class integer:
     def __init__(self, n):
@@ -831,6 +836,12 @@ class PowSeries:
     def __sub__(self, other):
         return self + (-other)
     
+    def __str__(self, n=3):
+        return str(self.poly(n))
+    
+    def pprint(self, n=3):
+        return self.poly(n).pprint()
+    
     __radd__ = __add__
     __rmul__ = __mul__
     
@@ -1028,8 +1039,126 @@ class matrix:
             arr.append(sub)
         
         return matrix(arr)
+class vect:
+    def __init__(self, array):
+        self.array = array[:]
+        self.dim = len(array)
         
+    def __add__(self, other):
+        return vect([self.array[i] + other.array[i] for i in range(self.dim)])
+    
+    def __mul__(self, other):
+        if isinstance(other, (int, float, poly, PowSeries)):
+            return vect([i * other for i in self.array])
         
+        elif isinstance(other, (vect, list, tuple)):
+            if isinstance(other, vect):
+                return dot(self.array[:], other.array[:])
+            
+            else:
+                return dot(self.array[:], other[:])
+        
+        else:
+            raise Exception(ValueError)
+    
+    def __neg__(self):
+        return (-1) * self
+    
+    def __sub__(self, other):
+        return self + (-other)
+    
+    def __str__(self):
+        return "<" + ", ".join([str(i) for i in self.array]) + ">"
+    
+    def length(self):
+        return math.sqrt(sum([i**2 for i in self.array[:]]))
+    
+    def cross(self, other):
+        return vect(cross(self.array[:], other.array[:]))
+    
+    __radd__ = __add__
+    __rmul__ = __mul__
+    
+    
+class pcurve:
+    def __init__(self, farr):
+        self.array = farr[:]
+        self.dim = len(farr)
+    
+    def __call__(self, x):
+        return vect([i(x) if callable(i) else i for i in self.array])
+    
+    def __add__(self, other):
+        return pcurve([self.array[i] + other.array[i] for i in range(self.dim)])
+    
+    def __mul__(self, other):
+        if isinstance(other, (int, float, poly, PowSeries)):
+            return pcurve([i * other for i in self.array])
+        
+        elif isinstance(other, (vect, list, tuple)):
+            if isinstance(other, vect):
+                return dot(self.array[:], other.array[:])
+            
+            else:
+                return dot(self.array[:], other[:])
+        
+        elif isinstance(other, pcurve):
+            return dot(self.array[:], other.array[:])
+        
+        else:
+            raise ValueError
+    
+    def __neg__(self):
+        return (-1) * self
+    
+    def __sub__(self, other):
+        return self + (-other)
+    
+    def cross(self, other):
+        return vect(cross(self.array[:], other.array[:]))
+    
+    def diff(self):
+        a = []
+        for i in self.array:
+            if hasattr(i, 'diff'):
+                a.append(i.diff())
+        
+        return pcurve(a[:])
+    
+    def length(self):
+        return lambda x : math.sqrt(sum([i(x)**2 if callable(i) else i ** 2 for i in self.array[:]]))
+    
+    def alen(self, a, b):
+        dvt = self.diff().length()
+        return numericIntegration(dvt, a, b)
+    
+    def pprint(self):
+        pstr = [[" "], ["<"], [" "]]
+        for i in self.array:
+            npstr = connect(pstr[:], connect(i.pprint()[:], [[" "], [","], [" "]]))[:]
+            pstr = npstr[:]
+        
+        return connect(pstr[:], [[" "], [">"], [" "]])
+    
+    def __str__(self):
+        return strpprint(self.pprint())
+    
+    def curvature(self):
+        return lambda x : self.diff()(x).cross(self.diff().diff()(x)).length()/self.diff().length()(x)**3
+    
+    def T(self):
+        return lambda x : self.diff()(x) * (1/self.diff().length()(x))
+    
+    def N(self):
+        return lambda x : numericDiff(self.T(), x) * (1/numericDiff(self, x).length())* (1 / self.curvature()(x))
+    
+    def B(self):
+        return lambda x : self.T()(x).cross(self.N()(x))
+    
+    __radd__ = __add__
+    __rmul__ = __mul__
+
+
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)
@@ -1246,5 +1375,9 @@ def random_diff_eq_2(nranges=[1, 10], n=2, max_deg=2):
     fin_ppr = connect(ppr[:], connect(pprint_s[:], connect([[" "], ["("], [" "]], connect(s, [[" "], [")"], [" "]]))))
     init_vals = [random.randint(nranges[0], nranges[1]), random.randint(nranges[0], nranges[1])]
     n = f * h
-    fin_func = poly(solveDEseries(coeffs, n, init_vals, 10))
+    fin_func = poly(solveDEseries(coeffs, n, init_vals, 100))
     return fin_func, strpprint(fin_ppr), init_vals
+
+def random_parameterinc_curve(nranges=[1, 10], max_deg=2, dims=2):
+    return [poly.rand(random.randint(0, max_deg), coeff_range=nranges[:]) for i in range(dims)]
+
