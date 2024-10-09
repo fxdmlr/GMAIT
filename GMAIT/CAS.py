@@ -1238,7 +1238,9 @@ class polymvar:
     
     def __add__(self, other):
         if isinstance(other, (int, float)):
-            self.array[0][0][0] += other
+            new_array = self.array[:]
+            new_array[0][0][0] += other
+            return polymvar(new_array[:])
         
         elif isinstance(other, polymvar):
             new_array = self.array[:] if len(self.array) >= len(other.array) else other.array[:]
@@ -1348,6 +1350,7 @@ class polymvar:
                         if i != 0:
                             new_array[i - 1][j][k] = i * self.array[i][j][k]
             
+            
             return polymvar(new_array[:])
         
         if wrt == 1:
@@ -1400,7 +1403,13 @@ class polymvar:
         
         else:
             return 0
-    
+        
+    def c_integrate(self, curve, t0, t1):
+        new_f = self(curve.array[0], curve.array[1], curve.array[2])
+        f = lambda x : new_f(x) * curve.diff().length()(x)
+        return numericIntegration(f, t0, t1, dx=0.00001)
+
+
     def peval(self, x, y, z):
         if [x, y, z].count(None) == 0:
             return self(x, y, z)
@@ -1527,9 +1536,21 @@ class vectF:
                       random.randint(nranges[0], nranges[1]) * s ,
                       0])
 
-print(vectF.randclsd())
-
-
+class add:
+    def __init__(self, arr):
+        self.array = arr[:]
+    
+    def __add__(self, other):
+        pass
+class sin:
+    def __init__(self, inp = poly([0, 1])):
+        self.inp = inp
+    
+    def __call__(self, x):
+        return math.sin(self.inp(x) if callable(self.inp) else self.inp)
+    
+    
+        
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)

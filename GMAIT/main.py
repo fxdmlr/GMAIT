@@ -21,7 +21,7 @@ def static(prechoice=None):
         choice = prechoice
     print("\n")
     if prechoice is None:
-        choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n21-Mean\n22-Stdev\n23-diffeq\n24-polyDetFourier\n"))
+        choice = int(input("Enter the desired mode :\n0-Quit\n1-regMul\n2-polyMul\n3-RegDet\n4-PolyDet\n5-regMatMul\n6-polyMatMul\n7-polyEval\n8-evalRoot\n9-evalRootPoly\n10-surdGame\n11-divGame\n12-polyDiv\n13-EigenGame\n14-RootGame\n15-DiscGame\n16-PFD\n17-IntegralGame\n18-RegDig\n19-Fourier Series\n20-Equation system\n21-Mean\n22-Stdev\n23-diffeq\n24-polyDetFourier\n25-curvatureGame\n26-TGame\n27-LineIntegralGame\n28-DiverganceGame\n29-LineIntegralSc\n"))
     if choice == 1:
         rounds = int(input("Number of rounds : "))
         a, b = input("Range of numbers (seperated by blank space): ").split(" ")
@@ -331,13 +331,78 @@ def static(prechoice=None):
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))
     
+    if choice == 25:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.pcurveGameC(number_of_rounds=rounds, max_deg=max_deg, nranges=ranges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 26:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.pcurveGameT(number_of_rounds=rounds, max_deg=max_deg, nranges=ranges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 27:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        moe = float(input("Margin of error : "))
+        os.system("clear")
+        stats = multgame.lineIntegral(number_of_rounds=rounds, max_deg=max_deg, nranges=ranges[:], moe=moe)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 28:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.diverganceGame(number_of_rounds=rounds, max_deg=max_deg, nranges=ranges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 29:
+        rounds = int(input("Number of rounds : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        moe = float(input("Margin of error : "))
+        os.system("clear")
+        stats = multgame.lineIntegralScalar(number_of_rounds=rounds, max_deg=max_deg, nranges=ranges[:], moe=moe)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
 def dynamic(prechoice=None):
     os.system("clear")
     if prechoice is not None:
         choice = prechoice
     print("\n")
     if prechoice is None:
-        choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n 17-Mean\n 18-Stdev\n 19-diffeq\n 20-PolyDet\n 21-PolyDetFourier\n"))
+        choice = int(input("Enter the desired mode :\n 0-Quit\n 1-regMul\n 2-regMulII\n 3-divGame\n 4-divGameII\n 5-MixedArr\n 6-MixedArrII\n 7-polyEval\n 8-DetGame\n 9-EigenValGame\n 10-DiscGame\n 11-rootGame\n 12-PFD\n 13-IntegralGame\n 14-regMulDig\n 15-Fourier Series\n 16-Equation System\n 17-Mean\n 18-Stdev\n 19-diffeq\n 20-PolyDet\n 21-PolyDetFourier\n 22-curvatureGame\n 23-TGame\n 24-LineIntegralGame\n 25-DiverganceGame\n 26-LineIntegralSc\n "))
     if choice == 0:
         return
     
@@ -618,6 +683,71 @@ def dynamic(prechoice=None):
         max_deg = int(input("Maximum degree : "))
         os.system("clear")
         stats = multgame.polyDetFourierGameDyn(duration=duration, dims=dims, nrange=ranges, max_deg=max_deg)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 22:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.pcurveGameCDyn(tot_time=duration, max_deg=max_deg, nranges=ranges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 23:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.pcurveGameTDyn(tot_time=duration, max_deg=max_deg, nranges=ranges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 24:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        moe = float(input("Margin of error : "))
+        os.system("clear")
+        stats = multgame.lineIntegralDyn(tot_time=duration, max_deg=max_deg, nranges=ranges[:], moe=moe)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 25:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        ndigits = int(input("Digits after floating point : "))
+        os.system("clear")
+        stats = multgame.diverganceGameDyn(tot_time=duration, max_deg=max_deg, nranges=ranges[:], ndigits=ndigits)
+        print("Score : ", round(stats[0]))
+        print("Total time spent : ", round(stats[1]))
+        print("Time spent per item : ", round(stats[2]))
+    
+    if choice == 26:
+        duration = int(input("Duration : "))
+        a, b = input("Range of numbers (seperated by blank space): ").split(" ")
+        ranges = [int(a), int(b)]
+        
+        max_deg = int(input("Maximum degree : "))
+        moe = float(input("Margin of error : "))
+        os.system("clear")
+        stats = multgame.lineIntegralScalarDyn(tot_time=duration, max_deg=max_deg, nranges=ranges[:], moe=moe)
         print("Score : ", round(stats[0]))
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))

@@ -1075,3 +1075,256 @@ def polyDetFourierGameDyn(duration=600, dims=3, nrange=[10, 100], max_deg=2, zra
     end = time.time()
     
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def pcurveGameC(number_of_rounds=5, nranges=[1, 10], max_deg=2, ndigits=2):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        pc = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        inp = random.randint(nranges[0], nranges[1])
+        k = pc.curvature()(inp)
+        print(pc)
+        z = input("find the curvature at x = %d : "%inp)
+        x = evl.evl(z)
+        if round(x, ndigits=ndigits) == round(k, ndigits=ndigits):
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f"%round(k, ndigits=ndigits))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def pcurveGameCDyn(tot_time=600, nranges=[1, 10], max_deg=2, ndigits=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        number_of_rounds += 1
+        pc = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        inp = random.randint(nranges[0], nranges[1])
+        k = pc.curvature()(inp)
+        print(pc)
+        z = input("find the curvature at x = %d : "%inp)
+        x = evl.evl(z)
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if round(x, ndigits=ndigits) == round(k, ndigits=ndigits):
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f"%round(k, ndigits=ndigits))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def pcurveGameT(number_of_rounds=5, nranges=[1, 10], max_deg=2, ndigits=2):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        pc = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        inp = random.randint(nranges[0], nranges[1])
+        k = pc.T()(inp)
+        print(pc)
+        z = input("find the sum of the arguments of T at x = %d : "%inp)
+        x = evl.evl(z)
+        if round(x, ndigits=ndigits) == round(sum(k.array[:]), ndigits=ndigits):
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f"%round(sum(k.array[:]), ndigits=ndigits))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def pcurveGameTDyn(tot_time=600, nranges=[1, 10], max_deg=2, ndigits=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        number_of_rounds += 1
+        pc = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        inp = random.randint(nranges[0], nranges[1])
+        k = pc.T()(inp)
+        print(pc)
+        z = input("find the sum of the arguments of T at x = %d : "%inp)
+        x = evl.evl(z)
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if round(x, ndigits=ndigits) == round(sum(k.array[:]), ndigits=ndigits):
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f"%round(sum(k.array[:]), ndigits=ndigits))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def lineIntegral(number_of_rounds=5, nranges=[1, 10], max_deg=2, moe=0.001):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        p = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        v = utils.vectF.rand(max_deg=max_deg, nranges=nranges[:])
+        init = random.randint(nranges[0], nranges[1])
+        fin = random.randint(nranges[0], nranges[1])
+        k = v.integrate(p)
+        ans = k(fin) - k(init)
+        print("C : \n", p)
+        print("F = \n", v)
+        print(p(init), p(fin))
+        z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
+        x = evl.evl(z)
+        if k-moe*k <= x <= k + moe*k:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f +- %d"%(k, k * moe))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def lineIntegralDyn(tot_time=600, nranges=[1, 10], max_deg=2, moe=0.001):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        number_of_rounds += 1
+        p = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        v = utils.vectF.rand(max_deg=max_deg, nranges=nranges[:])
+        init = random.randint(nranges[0], nranges[1])
+        fin = random.randint(nranges[0], nranges[1])
+        k = v.integrate(p)
+        ans = k(fin) - k(init)
+        print("C : \n", p)
+        print("F = \n", v)
+        print(p(init), p(fin))
+        z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
+        x = evl.evl(z)
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if k-moe*k <= x <= k + moe*k:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f +- %d"%(k, k * moe))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def diverganceGame(number_of_rounds=5, nranges=[1, 10], max_deg=2, ndigits=2):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        pc = utils.vectF.rand(max_deg=max_deg, nranges=nranges[:])
+        inps = [random.randint(nranges[0], nranges[1]) for i in range(3)]
+        k = pc.div()(inps[0], inps[1], inps[2])
+        print(pc)
+        z = input("find the divergance of F at %s: "% ("(" + ", ".join([str(y) for y in inps]) + ")"))
+        x = evl.evl(z)
+        if round(x, ndigits=ndigits) == round(k, ndigits=ndigits):
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f"%round(k, ndigits=ndigits))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def diverganceGameDyn(tot_time=600, nranges=[1, 10], max_deg=2, ndigits=2):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        number_of_rounds += 1
+        pc = utils.vectF.rand(max_deg=max_deg, nranges=nranges[:])
+        inps = [random.randint(nranges[0], nranges[1]) for i in range(3)]
+        k = pc.div()(inps[0], inps[1], inps[2])
+        print(pc)
+        z = input("find the divergance of F at %d : "%("(" + ", ".join([str(y) for y in inps]) + ")"))
+        x = evl.evl(z)
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if round(x, ndigits=ndigits) == round(k, ndigits=ndigits):
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f"%round(k, ndigits=ndigits))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def lineIntegralScalar(number_of_rounds=5, nranges=[1, 10], max_deg=2, moe=0.001):
+    start = time.time()
+    pts = 0
+    for i in range(number_of_rounds):
+        p = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        v = utils.polymvar.rand(max_deg=max_deg, nrange=nranges[:])
+        init = random.randint(nranges[0], nranges[1])
+        fin = random.randint(nranges[0], nranges[1])
+        k = v.c_integrate(p, init, fin)
+        print("C : \n", p)
+        print("F = \n", v)
+        print(p(init), p(fin))
+        z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
+        x = evl.evl(z)
+        if k-moe*k <= x <= k + moe*k:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f +- %d"%(k, k * moe))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+
+def lineIntegralScalarDyn(tot_time=600, nranges=[1, 10], max_deg=2, moe=0.001):
+    start = time.time()
+    pts = 0
+    number_of_rounds = 0
+    while time.time() - start <= tot_time:
+        number_of_rounds += 1
+        p = utils.pcurve.rand(max_deg=max_deg, nranges=nranges[:])
+        v = utils.polymvar.rand(max_deg=max_deg, nrange=nranges[:])
+        init = random.randint(nranges[0], nranges[1])
+        fin = random.randint(nranges[0], nranges[1])
+        k = v.c_integrate(p, init, fin)
+        print("C : \n", p)
+        print("F = \n", v)
+        print(p(init), p(fin))
+        z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
+        x = evl.evl(z)
+        end = time.time()
+        if time.time() - start > tot_time:
+            print("Time elapsed before entry.")
+            return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
+        
+        if k-moe*k <= x <= k + moe*k:
+            print("Correct.")
+            pts += 1
+        
+        else:
+            print("Incorrect. The answer was %f +- %d"%(k, k * moe))
+    
+    end = time.time()
+    return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]

@@ -26,6 +26,13 @@ def dot(arr1, arr2):
     
     return s
 
+def sdot(arr1, arr2):
+    s = arr1[0] * arr2[0]
+    for i in range(1, len(arr1)):
+        s += arr1[i] * arr2[i]
+    
+    return s
+
 def sgn(x):
     return x >= 0 if not callable(x) else x() >= 0
 
@@ -477,13 +484,19 @@ class AlgebraicReal:
     
         
 class poly:
-    def __init__(self, coeffs):
+    def __init__(self, coeffs, variable_type=0):
         self.coeffs = coeffs[:]
         for i in range(len(self.coeffs)):
             if isinstance(self.coeffs[i], float):
                 if int(self.coeffs[i]) == self.coeffs[i]:
                     self.coeffs[i] = int(self.coeffs[i])
         self.deg = len(coeffs) - 1
+        self.variable_type = variable_type
+        self.variable = "x"
+        if variable_type == 1:
+            self.variable = "y"
+        elif variable_type == 2:
+            self.variable = "z"
     
     def __call__(self, x):
         s = 0
@@ -553,24 +566,24 @@ class poly:
                 if i == self.deg:
                     temp_lines2 = connect(temp_lines1, [[" " for i in range(len(str(new_array[i])))], [str(abs(new_array[i]))], [" " for i in range(len(str(new_array[i])))]])
                 elif i == self.deg - 1:
-                    temp_lines2 = connect(temp_lines1, [[" " for i in range(len(str(new_array[i])) + 1)], [str(abs(new_array[i])) + "x"], [" " for i in range(len(str(new_array[i])) + 1)]])
+                    temp_lines2 = connect(temp_lines1, [[" " for i in range(len(str(new_array[i])) + 1)], [str(abs(new_array[i])) + self.variable], [" " for i in range(len(str(new_array[i])) + 1)]])
                     
                 else:
                     if abs(new_array[i]) != 1:
-                        temp_lines2 = connect(temp_lines1, [["".join([" " for i in range(len(str(abs(new_array[i]))) + 1)]) + str(self.deg - i)], [str(abs(new_array[i])) + "x" + "".join([" " for i in range(len(str(self.deg - i)))])], [" " for i in range(len(str(abs(new_array[i]))) + len(str(self.deg - i)))]])
+                        temp_lines2 = connect(temp_lines1, [["".join([" " for i in range(len(str(abs(new_array[i]))) + 1)]) + str(self.deg - i)], [str(abs(new_array[i])) + self.variable + "".join([" " for i in range(len(str(self.deg - i)))])], [" " for i in range(len(str(abs(new_array[i]))) + len(str(self.deg - i)))]])
                     else:
-                        temp_lines2 = connect(temp_lines1, [["".join([" "]) + str(self.deg - i)], ["x" + "".join([" " for i in range(len(str(self.deg - i)))])], [" " for i in range(1 + len(str(self.deg - i)))]])
+                        temp_lines2 = connect(temp_lines1, [["".join([" "]) + str(self.deg - i)], [self.variable + "".join([" " for i in range(len(str(self.deg - i)))])], [" " for i in range(1 + len(str(self.deg - i)))]])
                 lines = connect(lines, temp_lines2)
             else:
                 if i == self.deg:
                     temp_lines2 = connect(temp_lines1, abs(new_array[i]).pprint())
                 elif i == self.deg - 1:
-                    temp_lines2 = connect(temp_lines1, connect(abs(new_array[i]).pprint(), [[" "], ["x"], [" "]]))
+                    temp_lines2 = connect(temp_lines1, connect(abs(new_array[i]).pprint(), [[" "], [self.variable], [" "]]))
                 else:
                     if abs(new_array[i]) != 1:
-                        temp_lines2 = connect(temp_lines1, connect(abs(new_array[i]).pprint(), [[" " + str(self.deg - i)], ["x"+ "".join([" " for i in range(len(str(self.deg - i)))])], [" "+"".join([" " for i in range(len(str(self.deg - i)))])]]))
+                        temp_lines2 = connect(temp_lines1, connect(abs(new_array[i]).pprint(), [[" " + str(self.deg - i)], [self.variable+ "".join([" " for i in range(len(str(self.deg - i)))])], [" "+"".join([" " for i in range(len(str(self.deg - i)))])]]))
                     else:
-                        temp_lines2 = connect(temp_lines1, [[" " + str(self.deg - i)], ["x"+ "".join([" " for i in range(len(str(self.deg - i)))])], [" "+"".join([" " for i in range(len(str(self.deg - i)))])]])
+                        temp_lines2 = connect(temp_lines1, [[" " + str(self.deg - i)], [self.variable+ "".join([" " for i in range(len(str(self.deg - i)))])], [" "+"".join([" " for i in range(len(str(self.deg - i)))])]])
                 lines = connect(lines, temp_lines2)
         
         return lines[:]
@@ -611,6 +624,8 @@ class poly:
                 p *= self
             return p
     def __eq__(self, other):
+        if not isinstance(other, poly):
+            return False
         return self.coeffs[:] == other.coeffs[:]
     
     def __truediv__(self, other):
@@ -708,7 +723,7 @@ class poly:
         
         return poly(array)
     
-    def integral(self, c):
+    def integrate(self, c=0):
         array = [c]
         for i in range(len(self.coeffs)):
             array.append(self.coeffs[i] / (i + 1))
@@ -764,6 +779,35 @@ class poly:
     
     __rmul__ = __mul__
     __radd__ = __add__
+    
+    def convToMVar(self):
+        new_array = []
+        for i in range(len(self.coeffs)):
+            arr = []
+            for j in range(len(self.coeffs)):
+                arr2 = []
+                for k in range(len(self.coeffs)):
+                    arr2.append(0)
+                arr.append(arr2)
+            new_array.append(arr)
+        
+        if self.variable_type == 0:
+            for i in range(len(self.coeffs)):
+                new_array[i][0][0] = self.coeffs[i]
+            return polymvar(new_array)
+        
+        elif self.variable_type == 1:
+            for i in range(len(self.coeffs)):
+                new_array[0][i][0] = self.coeffs[i]
+            return polymvar(new_array)
+        
+        elif self.variable_type == 2:
+            for i in range(len(self.coeffs)):
+                new_array[0][0][i] = self.coeffs[i]
+            return polymvar(new_array)
+        
+        
+        
     @staticmethod
     def rand(deg, coeff_range = [0, 10]):
         coeffs = [(-1)**random.randint(1, 10) * random.randint(coeff_range[0], coeff_range[1]) for i in range(deg + 1)]
@@ -788,8 +832,9 @@ class poly:
         return x_i
 
 class PowSeries:
-    def __init__(self, c_n):
+    def __init__(self, c_n, name=None):
         self.function = c_n
+        self.name = name
     
     def poly(self, n):
         return poly([self.function(i) for i in range(n + 1)])
@@ -837,9 +882,13 @@ class PowSeries:
         return self + (-other)
     
     def __str__(self, n=3):
+        if self.name is not None:
+            return strpprint(self.pprint())
         return str(self.poly(n))
     
     def pprint(self, n=3):
+        if self.name is not None:
+            return [[" " for i in range(len(self.name))], [l for l in self.name], [" " for i in range(len(self.name))]]
         return self.poly(n).pprint()
     
     __radd__ = __add__
@@ -884,7 +933,8 @@ COSH = (1/2) * (EXP + EXP_)
 
 
 class matrix:
-    def __init__(self, array):
+    def __init__(self, array, name=None):
+        self.name = name
         self.array = array[:]
     def __str__(self):
         '''
@@ -914,6 +964,8 @@ class matrix:
         '''
         return matrixpprint(self.pprint())
     def pprint(self):
+        if self.name is not None:
+            return [[" " for i in range(len(self.name))], [l for l in self.name], [" " for i in range(len(self.name))]]
         tot_cells = []
         for i in self.array:
             cells = []
@@ -1048,7 +1100,7 @@ class vect:
         return vect([self.array[i] + other.array[i] for i in range(self.dim)])
     
     def __mul__(self, other):
-        if isinstance(other, (int, float, poly, PowSeries)):
+        if isinstance(other, (int, float, poly, PowSeries, polymvar)):
             return vect([i * other for i in self.array])
         
         elif isinstance(other, (vect, list, tuple)):
@@ -1087,6 +1139,9 @@ class pcurve:
     
     def __call__(self, x):
         return vect([i(x) if callable(i) else i for i in self.array])
+    
+    def __str__(self):
+        return "<" + ", ".join([str(i) for i in self.array]) + ">"
     
     def __add__(self, other):
         return pcurve([self.array[i] + other.array[i] for i in range(self.dim)])
@@ -1157,8 +1212,345 @@ class pcurve:
     
     __radd__ = __add__
     __rmul__ = __mul__
+    @staticmethod
+    def rand(max_deg=2, nranges=[1, 10]):
+        return pcurve([poly.rand(random.randint(0, max_deg), coeff_range=nranges[:]) for i in range(3)])
+        
+
+class polymvar:
+    def __init__(self, array):
+        '''
+        for now the number of variables is always 3.
+        
+        array[i][j][k] = c where c is the coefficient of
+        x^i y^j z^k 
+        '''
+        self.array = array[:]
+
+    def __call__(self, x, y, z):
+        s = 0
+        for i in range(len(self.array)):
+            for j in range(len(self.array)):
+                for k in range(len(self.array)):
+                    s += self.array[i][j][k] * (x ** i) * (y ** j) * (z ** k)
+        
+        return s
+    
+    def __add__(self, other):
+        if isinstance(other, (int, float)):
+            new_array = self.array[:]
+            new_array[0][0][0] += other
+            return polymvar(new_array[:])
+        
+        elif isinstance(other, polymvar):
+            new_array = self.array[:] if len(self.array) >= len(other.array) else other.array[:]
+            m_arr = other.array[:] if len(self.array) >= len(other.array) else self.array[:]
+            narr = [[[0 for k in range(len(new_array))] for j in range(len(new_array))] for i in range(len(new_array))]
+            q = len(m_arr)
+            for i in range(len(new_array)):
+                for j in range(len(new_array)):
+                    for k in range(len(new_array)):
+                        narr[i][j][k] += (new_array[i][j][k] + m_arr[i][j][k]) if i < q and j < q and k < q else (new_array[i][j][k])
+            
+            return polymvar(narr[:])
+        
+        elif isinstance(other, poly):
+            return self + other.convToMVar()
+    
+    def __mul__(self, other):
+        if isinstance(other, (int, float)):
+            new_array = self.array[:]
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[i][j][k] *= other
+            return polymvar(new_array)
+        
+        elif isinstance(other, polymvar):
+            new_array = []
+            for i in range(len(self.array) + len(other.array)):
+                arr = []
+                for j in range(len(self.array) + len(other.array)):
+                    arr2 = []
+                    for k in range(len(self.array) + len(other.array)):
+                        arr2.append(0)
+                    arr.append(arr2)
+                new_array.append(arr)
+            for i1 in range(len(self.array)):
+                for j1 in range(len(self.array)):
+                    for k1 in range(len(self.array)):
+                        for i2 in range(len(other.array)):
+                            for j2 in range(len(other.array)):
+                                for k2 in range(len(other.array)):
+                                    new_array[i1+i2][j1+j2][k1+k2] += self.array[i1][j1][k1] * other.array[i2][j2][k2]
+            
+            return polymvar(new_array[:])
+        
+        elif isinstance(other, poly):
+            return self * other.convToMVar()
+    
+    def __pow__(self, other):
+        ns = self
+        for i in range(other - 1):
+            ns *= self
+        return ns
+    
+    def __neg__(self):
+        return self * (-1)
+    
+    def __sub__(self, other):
+        return self + (-other)
+    
+    __rmul__ = __mul__
+    __radd__ = __add__
+    
+    
+    def pprint(self):
+        new_array = self.array[:]
+        lines = [[], [], []]
+        for i in range(len(new_array)):
+            for j in range(len(new_array)):
+                for k in range(len(new_array)):
+            
+                    temp_lines1 = [[" "], ["+" if sgn(new_array[i][j][k]) else "-"], [" "]]
+                    if new_array[i][j][k] == 0:
+                        continue
+                    temp_lines2 = [[], [], []]
+                    sarr = [[" " for l in range(len(str(abs(new_array[i][j][k]))))], [l for l in str(abs(new_array[i][j][k]))], [" " for l in range(len(str(abs(new_array[i][j][k]))))]]
+                    #nsubarr = connect(sub_arr[:], [[" "] + [l for l in str(i)] + [" "] + [l for l in str(j)] + [" "] + [l for l in str(k)], ["x"] + [" " for l in range(len(str(i)))] + ["y"] + [" " for l in range(len(str(j)))] + ["z"] + [" " for l in range(len(str(k)))], [" " for l in range(3 + len(str(i)) + len(str(j)) + len(str(k)))]])
+                    
+                    if i != 0:
+                        z = [[" "] + [l for l in str(i)], ["x"] + [" " for l in range(len(str(i)))], [" " for l in range(1 + len(str(i)))]]
+                        if i == 1:
+                            z = [[" "], ["x"] , [" "]]
+                        sarr = connect(sarr, z)[:]
+                    if j != 0:
+                        z = [[" "] + [l for l in str(j)], ["y"] + [" " for l in range(len(str(j)))], [" " for l in range(1 + len(str(j)))]]
+                        if j == 1:
+                            z = [[" "], ["y"] , [" "]]
+                        sarr = connect(sarr, z)[:]
+                    if k != 0:
+                        z = [[" "] + [l for l in str(k)], ["z"] + [" " for l in range(len(str(k)))], [" " for l in range(1 + len(str(k)))]]
+                        if k == 1:
+                            z = [[" "], ["z"] , [" "]]
+                        sarr = connect(sarr, z)[:]                    
+                    lines = connect(lines[:], connect(temp_lines1[:], sarr[:]))
+        
+        return lines[:]
+    
+    def __str__(self):
+        return strpprint(self.pprint())
+    
+    def diff(self, wrt):
+        new_array = [[[0 for k in range(len(self.array))] for j in range(len(self.array))] for i in range(len(self.array))]
+        if wrt == 0:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        if i != 0:
+                            new_array[i - 1][j][k] = i * self.array[i][j][k]
+            
+            
+            return polymvar(new_array[:])
+        
+        if wrt == 1:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        if j != 0:
+                            new_array[i][j - 1][k] = j * self.array[i][j][k]
+            
+            return polymvar(new_array[:])
+        
+        if wrt == 2:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        if k != 0:
+                            new_array[i][j][k - 1] = k * self.array[i][j][k]
+            
+            return polymvar(new_array[:])
+        
+        else:
+            return 0
+        
+    
+    def integrate(self, wrt):
+        new_array = [[[0 for k in range(len(self.array) + 1)] for j in range(len(self.array) + 1)] for i in range(len(self.array) + 1)]
+        if wrt == 0:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[i + 1][j][k] = self.array[i][j][k] / (i + 1)
+            
+            return polymvar(new_array[:])
+        
+        if wrt == 1:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[i][j + 1][k] = self.array[i][j][k] / (j + 1)
+            
+            return polymvar(new_array[:])
+        
+        if wrt == 2:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[i][j][k + 1] = self.array[i][j][k] / (k + 1)
+            
+            return polymvar(new_array[:])
+        
+        else:
+            return 0
+        
+    def c_integrate(self, curve, t0, t1):
+        new_f = self(curve.array[0], curve.array[1], curve.array[2])
+        f = lambda x : new_f(x) * curve.diff().length()(x)
+        return numericIntegration(f, t0, t1, dx=0.0001)
 
 
+    def peval(self, x, y, z):
+        if [x, y, z].count(None) == 0:
+            return self(x, y, z)
+        
+        new_array = [[[0 for k in range(len(self.array))] for j in range(len(self.array))] for i in range(len(self.array))]
+        cond = True
+        if [x, y, z].count(None) < 2 :
+            return self.peval(x, None, None).peval(None, y, None).peval(None, None, z)
+        
+        if x is not None: 
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[0][j][k] += self.array[i][j][k] * (x**i)
+            cond = False
+        
+        if y is not None:
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[i][0][k] += (new_array[i][j][k] * (y**j)) if not cond else self.array[i][j][k] * (y**j)
+            
+            cond = False
+        
+        if z is not None:   
+            for i in range(len(self.array)):
+                for j in range(len(self.array)):
+                    for k in range(len(self.array)):
+                        new_array[i][j][0] += (new_array[i][j][k] * (z**k)) if not cond else self.array[i][j][k] * (z**k)
+            
+            cond = False
+        
+        if cond:
+            return self
+        
+        return polymvar(new_array[:])
+    
+    def grad(self):
+        return vect([self.diff(0), self.diff(1), self.diff(2)])
+
+    @staticmethod
+    def rand(max_deg=2, nrange=[1, 10]):
+        new_array = []
+        for i in range(max_deg):
+            arr = []
+            for j in range(max_deg):
+                arr2 = []
+                for k in range(max_deg):
+                    arr2.append(random.randint(nrange[0], nrange[1]) * random.randint(0, 1))
+                arr.append(arr2)
+            new_array.append(arr)
+        
+        return polymvar(new_array[:])
+
+class vectF:
+    def __init__(self, array):
+        self.array = array[:]
+        self.dim = len(array)
+        
+    def __add__(self, other):
+        return vect([self.array[i] + other.array[i] for i in range(self.dim)])
+    
+    def __call__(self, x, y, z):
+        return vectF([i(x, y, z) if callable(i) else i for i in self.array[:]])
+    
+    def __mul__(self, other):
+        if isinstance(other, (int, float, poly, PowSeries, polymvar)):
+            return vect([i * other for i in self.array])
+        
+        elif isinstance(other, (vect, list, tuple, pcurve, vectF)):
+            if isinstance(other, (vect, vectF, pcurve)):
+                return sdot(self.array[:], other.array[:])
+            
+            else:
+                return sdot(self.array[:], other[:])
+        
+        else:
+            raise Exception(ValueError)
+    
+    def __neg__(self):
+        return (-1) * self
+    
+    def __sub__(self, other):
+        return self + (-other)
+    
+    def __str__(self):
+        return "<" + ", ".join([str(i) for i in self.array]) + ">"
+    
+    def length(self):
+        return math.sqrt(sum([i**2 for i in self.array[:]]))
+    
+    def cross(self, other):
+        return vect(cross(self.array[:], other.array[:]))
+    
+    def div(self):
+       return sum([self.array[i].diff(i) for i in range(len(self.array))])
+    
+    def curl(self):
+        a = self.array[2].diff(1)-self.array[1].diff(2)
+        b = self.array[0].diff(2)-self.array[2].diff(0)
+        c = self.array[1].diff(0)-self.array[0].diff(1)
+        return vect([a, b, c])
+    
+    def integrate(self, curve):
+        nf = self(curve.array[0], curve.array[1], curve.array[2])
+        dl = curve.diff()
+        n = nf * dl
+        return n.integrate()
+    
+    
+    __radd__ = __add__
+    __rmul__ = __mul__
+    @staticmethod
+    def rand(max_deg=2, nranges=[1, 10]):
+        return vectF([polymvar.rand(max_deg=max_deg, nrange=nranges[:]) for i in range(3)])
+    
+    @staticmethod
+    def randclsd(nranges = [1, 10], b=0):
+        s = SIN
+        c = COS
+        s.name = "sin(t)"
+        c.name = "cos(t)"
+        return vectF([random.randint(nranges[0], nranges[1]) * c,
+                      random.randint(nranges[0], nranges[1]) * s ,
+                      0])
+
+class add:
+    def __init__(self, arr):
+        self.array = arr[:]
+    
+    def __add__(self, other):
+        pass
+class sin:
+    def __init__(self, inp = poly([0, 1])):
+        self.inp = inp
+    
+    def __call__(self, x):
+        return math.sin(self.inp(x) if callable(self.inp) else self.inp)
+    
+    
+        
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)
