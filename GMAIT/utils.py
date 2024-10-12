@@ -505,6 +505,12 @@ class poly:
         
         return s
     
+    def __neg__(self):
+        return -1 * self
+    
+    def __sub__(self, other):
+        return self + (-other)
+    
     def __str__(self):
         '''
         string = []
@@ -1720,7 +1726,10 @@ def fourier_s_poly(p1, p_range=[1, 5]):
 def randFunction(nranges=[1, 10], n=2, max_deg=2):
     functions = [(SINH, [[" ", " ", " ", " ", " ", " ", " "], ["s", "i", "n", "h", "(", "x", ")"], [" ", " ", " ", " ", " ", " ", " "]]), 
                  (COSH, [[" ", " ", " ", " ", " ", " ", " "], ["c", "o", "s", "h", "(", "x", ")"], [" ", " ", " ", " ", " ", " ", " "]]), 
-                 (EXP, [[" ", "x"], ["e"," "], [" ", " "]])]
+                 (EXP, [[" ", "x"], ["e"," "], [" ", " "]]), 
+                 (SIN, [[ " ", " ", " ", " ", " ", " "], ["s", "i", "n", "(", "x", ")"], [" ", " ", " ", " ", " ", " "]]), 
+                 (COS, [[" ", " ", " ", " ", " ", " "], ["c", "o", "s", "(", "x", ")"], [" ", " ", " ", " ", " ", " "]]), 
+                 ]
     return functions[random.randint(0, len(functions) - 1)]
 
 

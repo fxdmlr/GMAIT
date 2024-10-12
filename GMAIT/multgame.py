@@ -1185,12 +1185,12 @@ def lineIntegral(number_of_rounds=5, nranges=[1, 10], max_deg=2, moe=0.001):
         print(p(init), p(fin))
         z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
         x = evl.evl(z)
-        if k-moe*k <= x <= k + moe*k:
+        if ans-moe*ans <= x <= ans + moe*ans:
             print("Correct.")
             pts += 1
         
         else:
-            print("Incorrect. The answer was %f +- %d"%(k, k * moe))
+            print("Incorrect. The answer was %f +- %d"%(ans, ans * moe))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
@@ -1217,12 +1217,12 @@ def lineIntegralDyn(tot_time=600, nranges=[1, 10], max_deg=2, moe=0.001):
             print("Time elapsed before entry.")
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
         
-        if k-moe*k <= x <= k + moe*k:
+        if ans-moe*ans <= x <= ans + moe*ans:
             print("Correct.")
             pts += 1
         
         else:
-            print("Incorrect. The answer was %f +- %d"%(k, k * moe))
+            print("Incorrect. The answer was %f +- %d"%(ans, ans * moe))
     
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]

@@ -94,6 +94,24 @@ def numericIntegration(function, c, d, dx=0.0001):
 def numericDiff(function, x, dx=0.0001):
     return (function(x+dx) - function(x-dx))* (1/(2*dx))
 
+def simpInt(function, c, d, h=0.001):
+    i = c + h
+    s = 0
+    n = 1
+    while i <= d:
+        s += (2 ** (n % 2 + 1)) * function(i)
+        n += 1
+        i += h
+    
+    s += function(c) + function(d)
+    return (h / 3) * s
+
+def reallineNIntegrate(function, h=0.0001):
+    return simpInt(lambda x : function(x/(1-x**2) * (1+x**2))/((1-x**2)**2) if x!=1 else 0, -1, 1, h=h)
+
+def semiNIntegrate(function, lowerbound, h=0.0001):
+    return simpInt(lambda x : function(lowerbound - 1 + 1/(1-x)) / ((1-x)**2) if x != 1 else 0, 0, 1, h=h)
+
 class integer:
     def __init__(self, n):
         self.n = n
@@ -504,6 +522,11 @@ class poly:
             s += self.coeffs[i] * x ** i
         
         return s
+    def __neg__(self):
+        return -1 * self
+    
+    def __sub__(self, other):
+        return self + (-other)
     
     def __str__(self):
         '''
@@ -1535,22 +1558,6 @@ class vectF:
         return vectF([random.randint(nranges[0], nranges[1]) * c,
                       random.randint(nranges[0], nranges[1]) * s ,
                       0])
-
-class add:
-    def __init__(self, arr):
-        self.array = arr[:]
-    
-    def __add__(self, other):
-        pass
-class sin:
-    def __init__(self, inp = poly([0, 1])):
-        self.inp = inp
-    
-    def __call__(self, x):
-        return math.sin(self.inp(x) if callable(self.inp) else self.inp)
-    
-    
-        
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)
@@ -1773,3 +1780,35 @@ def random_diff_eq_2(nranges=[1, 10], n=2, max_deg=2):
 def random_parameterinc_curve(nranges=[1, 10], max_deg=2, dims=2):
     return [poly.rand(random.randint(0, max_deg), coeff_range=nranges[:]) for i in range(dims)]
 
+def laplace_t(function):
+    return lambda s : simpInt(lambda x : function(x) * math.exp(-s*x), 0, 1000)
+
+def random_pfd(nrange=[1, 10], max_deg=2):
+    z = []
+    for j in range(max_deg):
+        x = (-1)**random.randint(1, 2) * random.randint(nrange[0], nrange[1])
+        while x in z:
+            x = (-1)**random.randint(1, 2) * random.randint(nrange[0], nrange[1])
+        z.append(x)
+    z.sort()
+    z.reverse()
+    q = [poly([j, 1]) for j in z]
+    a = 1
+    for j in q:
+        a *= j
+    v = [random.randint(nrange[0], nrange[1]) * ((-1)**random.randint(1,2)) for j in range(len(q))]
+    p = poly([0])
+    for j in range(len(q)):
+        pol_arr = q[:j] + q[j+1:] if j < len(q) - 1 else q[:j]
+        r = poly([1])
+        for k in pol_arr:
+            r *= k
+        p += r*v[j]
+    str1 = str(p)
+    str2 = str(a)
+    str1cpy = str1[:]
+    str2cpy = str2[:]
+    len_measure1 = len(str1cpy.split("\n")[0])
+    len_measure2 = len(str2cpy.split("\n")[0])
+    str3 = "".join(["-" for j in range(max(len_measure1, len_measure2))])
+    return [p, q, "\n".join([str1, str3, str2])]
