@@ -697,34 +697,34 @@ def regMulDynDig(total_time=600, digits=5):
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, total_time]
 
-def fourierSgame(number_of_rounds=5, nranges=[1, 10], deg=2, p_range=[0, 2], exp_cond=False):
-    print("Enter the result accurate to 2 digits after floating point.")
+def fourierSgame(number_of_rounds=5, nranges=[1, 10], deg=2, p_range=[0, 2], exp_cond=False, u_cond=False, umvar_cond=False, moe=0.01):
+    print("Enter the result within the margin of error.")
     start = time.time()
     pts = 0
     
     for i in range(number_of_rounds):
-        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond)
+        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond, u_cond=u_cond, umvar_cond=umvar_cond)
         print(string)
         print("P =", period)
         x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
         res = round(a_0 + a_n(1) + b_n(1), ndigits=2)
-        if x == res:
+        if (1-moe) * res <= x <= (1+moe)*res:
             print("Correct.")
             pts += 1
         
         else:
-            print("Incorrect. The answer was ", res)
+            print("Incorrect. The answer was ", res, "+-", moe*res)
         
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
 
-def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_cond=False):
-    print("Enter the result accurate to 2 digits after floating point.")
+def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_cond=False, u_cond=False, umvar_cond=False, moe=0.01):
+    print("Enter the result within the margin of error.")
     start = time.time()
     pts = 0
     number_of_rounds = 0
     while time.time() - start <= tot_time:
-        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond)
+        f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond, u_cond=u_cond, umvar_cond=umvar_cond)
         print(string)
         print("P =", period)
         x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
@@ -734,11 +734,11 @@ def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_co
         if time.time() - start > tot_time:
             print("Time Elapsed before entry.")
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, tot_time]
-        if x == res and time.time() - start <= tot_time:
+        if (1-moe) * res <= x <= (1+moe)*res :
             print("Correct.")
             pts += 1     
         else:
-            print("Incorrect. The answer was ", res)
+            print("Incorrect. The answer was ", res, "+-", moe*res)
         
     end = time.time()
     return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]

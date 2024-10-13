@@ -1558,6 +1558,18 @@ class vectF:
         return vectF([random.randint(nranges[0], nranges[1]) * c,
                       random.randint(nranges[0], nranges[1]) * s ,
                       0])
+
+def laplace_t(function):
+    return lambda s : simpInt(lambda x : function(x) * math.exp(-s*x), 0, 1000)
+
+def fourier_series(f, period):
+    a_n_d = lambda n : (lambda x : f(x) * math.cos(2 * n * math.pi * x / period))
+    b_n_d = lambda n : (lambda x : f(x) * math.sin(2 * n * math.pi * x / period)) 
+    a_n = lambda n : numericIntegration(a_n_d(n), -period/2, period/2) / (period/2)
+    b_n = lambda n : numericIntegration(b_n_d(n), -period/2, period/2) / (period/2)
+    a_0 = numericIntegration(f, -period/2, period/2) / period
+    return [a_n, b_n, a_0]
+
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)
@@ -1687,7 +1699,7 @@ def generate_trig_prod(nranges=[1, 10]):
     string = "\n".join(["".join(i) for i in string_array])
     return [function, string]
 
-def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False):
+def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False, u_cond=False, umvar_cond=False):
     p1 = poly.rand(deg, coeff_range=nranges[:])
     c1 = random.randint(nranges[0], nranges[1])
     period = 2*random.randint(p_range[0], p_range[1])
@@ -1695,6 +1707,35 @@ def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False):
     f = (lambda x : p1(x) * rand_exp(x))
     if not exp_cond:
         f = lambda x : p1(x)
+    if u_cond:
+        z = rndF(nranges=nranges)
+        f = lambda x : p1(z[0](x))
+        a_n, b_n, a_0 = fourier_series(f, period)
+        nstr = connect(p1.pprint(), [[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "], 
+                                     [" ", "w", "h", "e", "r", "e", " ", "x", " ", "=", " "],
+                                     [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
+        pnstr = connect(nstr, z[1])
+        return [f, period, a_n, b_n, a_0, strpprint(pnstr), p1, c1]
+    
+    if umvar_cond:
+        x, y, z = rndF(nranges=nranges), rndF(nranges=nranges), rndF(nranges=nranges)
+        p1 = polymvar.rand(max_deg=2, nrange=nranges[:])
+        f = lambda t : p1(x[0](t), y[0](t), z[0](t))
+        a_n, b_n, a_0 = fourier_series(f, period)
+        nstr = connect(p1.pprint(), [[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "], 
+                                     [" ", "w", "h", "e", "r", "e", " ", "x", " ", "=", " "],
+                                     [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
+        pnstr = connect(nstr, x[1])
+        nstr = connect(pnstr, [[" ", " ", " ", " ", " ", " ", " ", " ", " "], 
+                                     [" ", "a", "n", "d", " ", "y", " ", "=", " "],
+                                     [" ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
+        pnstr = connect(nstr, y[1])
+        nstr = connect(pnstr, [[" ", " ", " ", " ", " ", " ", " ", " ", " "], 
+                                     [" ", "a", "n", "d", " ", "z", " ", "=", " "],
+                                     [" ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
+        pnstr = connect(nstr, z[1])
+        return [f, period, a_n, b_n, a_0, strpprint(pnstr), p1, c1] 
+        
     a_n_d = lambda n : (lambda x : f(x) * math.cos(2 * n * math.pi * x / period))
     b_n_d = lambda n : (lambda x : f(x) * math.sin(2 * n * math.pi * x / period)) 
     a_n = lambda n : numericIntegration(a_n_d(n), -period/2, period/2) / (period/2)
@@ -1728,6 +1769,16 @@ def randFunction(nranges=[1, 10], n=2, max_deg=2):
     functions = [(SINH, [[" ", " ", " ", " ", " ", " ", " "], ["s", "i", "n", "h", "(", "x", ")"], [" ", " ", " ", " ", " ", " ", " "]]), 
                  (COSH, [[" ", " ", " ", " ", " ", " ", " "], ["c", "o", "s", "h", "(", "x", ")"], [" ", " ", " ", " ", " ", " ", " "]]), 
                  (EXP, [[" ", "x"], ["e"," "], [" ", " "]])]
+    return functions[random.randint(0, len(functions) - 1)]
+
+def rndF(nranges=[1, 10]):
+    a, b, c, d, e = [random.randint(nranges[0], nranges[1]) for i in range(5)]
+    functions = [(lambda x : math.sinh(a * x), [[" ", " ", " ", " ", " "] + [" " for i in str(a)] + [ " ", " "], ["s", "i", "n", "h", "("] + [i for i in str(a)] + ["x", ")"], [" ", " ", " ", " ", " "] + [" " for i in str(a)] + [ " ", " "]]), 
+                 (lambda x : math.cosh(b * x), [[" ", " ", " ", " ", " "] + [" " for i in str(b)] + [ " ", " "], ["c", "o", "s", "h", "("] + [i for i in str(b)] + ["x", ")"], [" ", " ", " ", " ", " "] + [" " for i in str(b)] + [ " ", " "]]), 
+                 (lambda x : math.exp(c * x), [[" "] + [i for i in str(c)] + ["x"], ["e"," "] + [" " for i in str(c)], [" ", " "] + [" " for i in str(c)]]),
+                 (lambda x : math.sin(d * x), [[" ", " ", " ", " "] + [" " for i in str(d)] + [ " ", " "], ["s", "i", "n", "("] + [i for i in str(d)] + ["x", ")"], [" ", " ", " ", " "] + [" " for i in str(d)] + [ " ", " "]]), 
+                 (lambda x : math.cos(e * x), [[" ", " ", " ", " "] + [" " for i in str(e)] + [ " ", " "], ["c", "o", "s", "("] + [i for i in str(e)] + ["x", ")"], [" ", " ", " ", " "] + [" " for i in str(e)] + [ " ", " "]]), 
+                 ]
     return functions[random.randint(0, len(functions) - 1)]
 
 
@@ -1780,8 +1831,7 @@ def random_diff_eq_2(nranges=[1, 10], n=2, max_deg=2):
 def random_parameterinc_curve(nranges=[1, 10], max_deg=2, dims=2):
     return [poly.rand(random.randint(0, max_deg), coeff_range=nranges[:]) for i in range(dims)]
 
-def laplace_t(function):
-    return lambda s : simpInt(lambda x : function(x) * math.exp(-s*x), 0, 1000)
+
 
 def random_pfd(nrange=[1, 10], max_deg=2):
     z = []

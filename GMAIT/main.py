@@ -261,9 +261,14 @@ def static(prechoice=None):
         p_ranges = [int(c), int(d)]
         
         max_deg = int(input("Maximum degree : "))
+        moe = float(input("Margin of error : "))
         exp_cond = int(input("Exponential mode? 1 : Yes\t0 : No "))
+        u_cond = int(input("Poly mode? 1 : Yes\t0 : No "))
+        umvar_cond = 0
+        if u_cond != 0:
+            umvar_cond = int(input("Multivariate mode? 1 : Yes\t0 : No "))
         os.system("clear")
-        stats = multgame.fourierSgame(number_of_rounds=rounds, nranges=ranges[:], deg=max_deg, p_range=p_ranges, exp_cond=exp_cond)
+        stats = multgame.fourierSgame(number_of_rounds=rounds, nranges=ranges[:], deg=max_deg, p_range=p_ranges, exp_cond=exp_cond, u_cond=u_cond, umvar_cond=umvar_cond, moe=moe)
         print("Score : ", round(stats[0]))
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))
@@ -603,9 +608,14 @@ def dynamic(prechoice=None):
         p_ranges = [int(c), int(d)]
         
         max_deg = int(input("Maximum degree : "))
+        moe = float(input("Margin of error : "))
         exp_cond = int(input("Exponential mode? 1 : Yes\t0 : No "))
+        u_cond = int(input("Poly mode? 1 : Yes\t0 : No "))
+        umvar_cond = 0
+        if u_cond != 0:
+            umvar_cond = int(input("Multivariate mode? 1 : Yes\t0 : No "))
         os.system("clear")
-        stats = multgame.fourierSgameDyn(tot_time=duration, nranges=ranges[:], deg=max_deg, p_range=p_ranges, exp_cond=exp_cond)
+        stats = multgame.fourierSgameDyn(tot_time=duration, nranges=ranges[:], deg=max_deg, p_range=p_ranges, exp_cond=exp_cond, u_cond=u_cond, umvar_cond=umvar_cond, moe=moe)
         print("Score : ", round(stats[0]))
         print("Total time spent : ", round(stats[1]))
         print("Time spent per item : ", round(stats[2]))
