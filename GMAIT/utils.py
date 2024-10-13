@@ -1707,16 +1707,6 @@ def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False, u
     f = (lambda x : p1(x) * rand_exp(x))
     if not exp_cond:
         f = lambda x : p1(x)
-    if u_cond:
-        z = rndF(nranges=nranges)
-        f = lambda x : p1(z[0](x))
-        a_n, b_n, a_0 = fourier_series(f, period)
-        nstr = connect(p1.pprint(), [[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "], 
-                                     [" ", "w", "h", "e", "r", "e", " ", "x", " ", "=", " "],
-                                     [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
-        pnstr = connect(nstr, z[1])
-        return [f, period, a_n, b_n, a_0, strpprint(pnstr), p1, c1]
-    
     if umvar_cond:
         x, y, z = rndF(nranges=nranges), rndF(nranges=nranges), rndF(nranges=nranges)
         p1 = polymvar.rand(max_deg=2, nrange=nranges[:])
@@ -1734,7 +1724,18 @@ def generate_fourier_s(nranges=[1, 10], deg=2, p_range=[1, 5], exp_cond=False, u
                                      [" ", "a", "n", "d", " ", "z", " ", "=", " "],
                                      [" ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
         pnstr = connect(nstr, z[1])
-        return [f, period, a_n, b_n, a_0, strpprint(pnstr), p1, c1] 
+        return [f, period, a_n, b_n, a_0, strpprint(pnstr), p1, c1]
+    if u_cond:
+        z = rndF(nranges=nranges)
+        f = lambda x : p1(z[0](x))
+        a_n, b_n, a_0 = fourier_series(f, period)
+        nstr = connect(p1.pprint(), [[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "], 
+                                     [" ", "w", "h", "e", "r", "e", " ", "x", " ", "=", " "],
+                                     [" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]])[:]
+        pnstr = connect(nstr, z[1])
+        return [f, period, a_n, b_n, a_0, strpprint(pnstr), p1, c1]
+    
+     
         
     a_n_d = lambda n : (lambda x : f(x) * math.cos(2 * n * math.pi * x / period))
     b_n_d = lambda n : (lambda x : f(x) * math.sin(2 * n * math.pi * x / period)) 
