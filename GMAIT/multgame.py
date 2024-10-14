@@ -706,9 +706,9 @@ def fourierSgame(number_of_rounds=5, nranges=[1, 10], deg=2, p_range=[0, 2], exp
         f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond, u_cond=u_cond, umvar_cond=umvar_cond)
         print(string)
         print("P =", period)
-        x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
-        res = round(a_0 + a_n(1) + b_n(1), ndigits=2)
-        if (1-moe) * res <= x <= (1+moe)*res:
+        x = evl.evl(input("a0 + a1 + b1 = "))
+        res = a_0 + a_n(1) + b_n(1)
+        if (1-moe) * res <= x <= (1+moe)*res or (1+moe) * res <= x <= (1-moe)*res:
             print("Correct.")
             pts += 1
         
@@ -727,14 +727,14 @@ def fourierSgameDyn(tot_time=600, nranges=[1, 10], deg=2, p_range=[0, 2], exp_co
         f, period, a_n, b_n, a_0, string, p1, c1 = utils.generate_fourier_s(nranges=nranges[:], deg=random.randint(0, deg), p_range=p_range, exp_cond=exp_cond, u_cond=u_cond, umvar_cond=umvar_cond)
         print(string)
         print("P =", period)
-        x = round(evl.evl(input("a0 + a1 + b1 = ")), ndigits=2)
         number_of_rounds += 1
-        res = round(a_0 + a_n(1) + b_n(1), ndigits=2)
+        x = evl.evl(input("a0 + a1 + b1 = "))
+        res = a_0 + a_n(1) + b_n(1)
         end = time.time()
         if time.time() - start > tot_time:
             print("Time Elapsed before entry.")
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds, tot_time]
-        if (1-moe) * res <= x <= (1+moe)*res :
+        if (1-moe) * res <= x <= (1+moe)*res or (1+moe) * res <= x <= (1-moe)*res:
             print("Correct.")
             pts += 1     
         else:
@@ -1185,7 +1185,7 @@ def lineIntegral(number_of_rounds=5, nranges=[1, 10], max_deg=2, moe=0.001):
         print(p(init), p(fin))
         z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
         x = evl.evl(z)
-        if ans-moe*ans <= x <= ans + moe*ans:
+        if ans-moe*ans <= x <= ans + moe*ans or ans+moe*ans <= x <= ans - moe*ans:
             print("Correct.")
             pts += 1
         
@@ -1217,7 +1217,7 @@ def lineIntegralDyn(tot_time=600, nranges=[1, 10], max_deg=2, moe=0.001):
             print("Time elapsed before entry.")
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
         
-        if ans-moe*ans <= x <= ans + moe*ans:
+        if ans-moe*ans <= x <= ans + moe*ans or ans+moe*ans <= x <= ans - moe*ans:
             print("Correct.")
             pts += 1
         
@@ -1288,7 +1288,7 @@ def lineIntegralScalar(number_of_rounds=5, nranges=[1, 10], max_deg=2, moe=0.001
         print(p(init), p(fin))
         z = input("find the line integral of F along C from %s to %s : "%(p(init), p(fin)))
         x = evl.evl(z)
-        if k-moe*k <= x <= k + moe*k:
+        if k-moe*k <= x <= k + moe*k or k+moe*k <= x <= k - moe*k:
             print("Correct.")
             pts += 1
         
@@ -1319,7 +1319,7 @@ def lineIntegralScalarDyn(tot_time=600, nranges=[1, 10], max_deg=2, moe=0.001):
             print("Time elapsed before entry.")
             return [pts / number_of_rounds * 100, end - start, (end - start) / number_of_rounds]
         
-        if k-moe*k <= x <= k + moe*k:
+        if k-moe*k <= x <= k + moe*k or k+moe*k <= x <= k - moe*k:
             print("Correct.")
             pts += 1
         

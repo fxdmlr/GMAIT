@@ -1570,6 +1570,14 @@ def fourier_series(f, period):
     a_0 = numericIntegration(f, -period/2, period/2) / period
     return [a_n, b_n, a_0]
 
+def fourierSt(function, start, end, dx=0.001):
+    f = lambda w : numericIntegration(lambda x : function(x) * math.sin(w * x), start, end, dx=dx)
+    return f
+
+def fourierCt(function, start, end, dx=0.001):
+    f = lambda w : numericIntegration(lambda x : function(x) * math.cos(w * x), start, end, dx=dx)
+    return f
+
 def generate_integrable_ratExpr(deg=3, nranges = [1, 10]):
     p = poly([1])
     p_deg = random.randint(0, deg)
