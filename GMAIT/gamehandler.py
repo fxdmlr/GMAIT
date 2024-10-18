@@ -360,6 +360,22 @@ def polyDet(inpt_dict):
 FUNCTIONS_ARRAY = [regMul, polyMul, polyEval, evalRoot, evalRootPoly, surd, polyDiv, div, polyroots, polydisc, partialFraction, subIntGame, 
                    regMulDig, fourierSeries, lineq, mean, stdev, diffeq, pcurve, pcurveT, divergence, lineIntegral, lineIntegralScalar, eigenValue,
                    polyDet]
+CALC_ARRAY = [subIntGame, diffeq, lineIntegral, lineIntegralScalar, divergence, fourierSeries, pcurve, pcurveT]
+ARITHMETIC_ARRAY = [regMul, regDet, evalRoot, div]
+LINEAR_ARRAY = [regDet, eigenValue, lineq, polyDet]
+FAVORITE_ARRAY = [regDet, polyDet]
 
 def shuffle(inpt_dict):
     return random.choice(FUNCTIONS_ARRAY)(inpt_dict)
+
+def calc_suite(inpt_dict):
+    return random.choice(CALC_ARRAY)(inpt_dict)
+
+def arithmetic_suite(inpt_dict):
+    return random.choice(ARITHMETIC_ARRAY)(inpt_dict)
+
+def linear_suite(inpt_dict):
+    return random.choice(LINEAR_ARRAY)(inpt_dict)
+
+def pick1(inpt_dict):
+    return random.choice(FAVORITE_ARRAY)(inpt_dict)
