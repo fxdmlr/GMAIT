@@ -77,15 +77,17 @@
 <body>
 
 <div id="container">
-    <div id="menu" style="height: 500px">
+    <div id="menu" style="height: auto">
         <button id="addBtn">Add</button>
         <button id="sendBtn">Send</button>
+            <!--  Send button will be changed to help in future       -->
+        <button id="clear">clear all</button>
+        <button id="setting">setting</button>
     </div>
     <div id="main">
         <div id="functionList"></div>
     </div>
 </div>
-
 <script>
     const functions = [
         { name: "Function1", numInputs: 3 },
@@ -109,6 +111,7 @@
     const functionListDiv = document.getElementById("functionList");
     const addBtn = document.getElementById("addBtn");
     const sendBtn = document.getElementById("sendBtn");
+    const clearBtn = document.getElementById("clear");
 
     const optionDiv = document.createElement("div");
 
@@ -116,29 +119,28 @@
         const button = document.createElement("button");
         button.textContent = func.name;
         button.onclick = () => addFunctionDiv(func);
-        button.style =  "            padding: 10px;\n" +
-            "            background-color: #3b3838;\n" +
-            "            border: white;\n" +
-            "            color: #a17810;\n" +
-            "            cursor: pointer;\n" +
-            "            margin-bottom: 10px;"
+        button.style = "padding: 10px; background-color: #3b3838; border: white; color: #a17810; cursor: pointer; margin-bottom: 10px;";
         optionDiv.appendChild(button);
     });
 
-        functionListDiv.appendChild(optionDiv);
+    functionListDiv.appendChild(optionDiv);
 
     function addFunctionDiv(func) {
         const div = document.createElement("div");
         div.className = "function-div";
+        div.style = "padding: 4px; \n" +
+            "            padding: 20px;"
         div.innerHTML = `
-            <strong>${func.name}</strong>
+            <strong style="color: darkred">${func.name}</strong>
             <button class="close-btn" onclick="removeFunctionDiv(this)">✖</button>
             <div>
-                ${Array.from({ length: func.numInputs }, (_, i) => `
+                ${Array.from({length: func.numInputs}, (_, i) => `
                     <label style="color: chartreuse">Input ${i + 1}:</label>
                     <input type="text" class="input" required /><br/>
                 `).join('')}
             </div>
+            <br>
+            <button class="send-btn" style="color: gold; background-color: #525252; padding: 4px" onclick="sendFunctionData(this)">Compute the result</button>
             <div class="result" style="color: cyan">Result: <span class="output"></span></div>
         `;
         functionListDiv.appendChild(div);
@@ -146,6 +148,30 @@
 
     function removeFunctionDiv(button) {
         button.parentElement.remove();
+    }
+
+    function sendFunctionData(button) {
+        const div = button.parentElement.parentElement;  // Get the function div
+        const funcName = div.childNodes[0].textContent;
+        const inputs = [...div.querySelectorAll('.input')].map(input => input.value);
+        const outputNode = div.querySelector('.output');
+
+        // Sending data to the server
+        const jsonData = JSON.stringify({ name: funcName, inputs: inputs });
+        fetch('http://localhost:5000/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: jsonData
+        })
+        .then(response => response.json())
+        .then(responseData => {
+            outputNode.textContent = responseData.result;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     sendBtn.addEventListener("click", async () => {
@@ -169,6 +195,12 @@
             // Displaying result in the div
             outputNode.textContent = responseData.result;
         }
+    });
+
+    // Clear all function divisions
+    clearBtn.addEventListener("click", () => {
+        functionListDiv.innerHTML = '';  // Clear all inner HTML
+        functionListDiv.appendChild(optionDiv);
     });
 </script>
 </body>
