@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Gmait</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        #container {
+            display: flex;
+        }
+        #menu {
+            width: 200px;
+            background-color: #2e2e2e;
+            padding: 10px;
+            border-right: 1px solid #444;
+        }
+        #menu button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3c3c3c;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        #menu button:hover {
+            background-color: #5a5a5a;
+        }
+        #main {
+            flex: 1;
+            padding: 10px;
+        }
+        .function-div {
+            background-color: #333;
+            border: 1px solid #444;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .result {
+            margin-top: 10px;
+            background-color: #444;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="menu">
+        <button id="addBtn">Add</button>
+        <button id="sendBtn">Send</button>
+    </div>
+    <div id="main">
+        <div id="functionList"></div>
+    </div>
+</div>
+
+
+</body>
+</html>
