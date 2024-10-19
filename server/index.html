@@ -30,6 +30,15 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
+        .button{
+            width: 100%;
+            padding: 10px;
+            background-color: #3b3838;
+            border: white;
+            color: #a17810;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
         #menu button:hover {
             background-color: #5a5a5a;
         }
@@ -42,6 +51,20 @@
             border: 1px solid #444;
             margin-bottom: 10px;
             padding: 10px;
+            position: relative;  /* Allow for absolute positioning of the close button */
+        }
+        .close-btn {
+            display: none;  /* Hide by default */
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .function-div:hover .close-btn {
+            display: inline;  /* Show button on hover */
         }
         .result {
             margin-top: 10px;
@@ -53,7 +76,7 @@
 <body>
 
 <div id="container">
-    <div id="menu">
+    <div id="menu" style="height: 500px">
         <button id="addBtn">Add</button>
         <button id="sendBtn">Send</button>
     </div>
@@ -62,6 +85,90 @@
     </div>
 </div>
 
+<script>
+    const functions = [
+        { name: "Function1", numInputs: 3 },
+        { name: "Function2", numInputs: 4 },
+        { name: "Function3", numInputs: 2 },
+        { name: "Function4", numInputs: 5 },
+        { name: "Function5", numInputs: 3 },
+        { name: "Function6", numInputs: 4 },
+        { name: "Function7", numInputs: 2 },
+        { name: "Function8", numInputs: 3 },
+        { name: "Function9", numInputs: 4 },
+        { name: "Function10", numInputs: 5 },
+        { name: "Function11", numInputs: 3 },
+        { name: "Function12", numInputs: 4 },
+        { name: "Function13", numInputs: 2 },
+        { name: "Function14", numInputs: 3 },
+        { name: "Function15", numInputs: 4 },
+        { name: "Function16", numInputs: 5 },
+    ];
 
+    const functionListDiv = document.getElementById("functionList");
+    const addBtn = document.getElementById("addBtn");
+    const sendBtn = document.getElementById("sendBtn");
+
+    const optionDiv = document.createElement("div");
+
+    functions.forEach(func => {
+        const button = document.createElement("button");
+        button.textContent = func.name;
+        button.onclick = () => addFunctionDiv(func);
+        button.style =  "            padding: 10px;\n" +
+            "            background-color: #3b3838;\n" +
+            "            border: white;\n" +
+            "            color: #a17810;\n" +
+            "            cursor: pointer;\n" +
+            "            margin-bottom: 10px;"
+        optionDiv.appendChild(button);
+    });
+
+        functionListDiv.appendChild(optionDiv);
+
+    function addFunctionDiv(func) {
+        const div = document.createElement("div");
+        div.className = "function-div";
+        div.innerHTML = `
+            <strong>${func.name}</strong>
+            <button class="close-btn" onclick="removeFunctionDiv(this)">✖</button>
+            <div>
+                ${Array.from({ length: func.numInputs }, (_, i) => `
+                    <label style="color: chartreuse">Input ${i + 1}:</label>
+                    <input type="text" class="input" required /><br/>
+                `).join('')}
+            </div>
+            <div class="result" style="color: cyan">Result: <span class="output"></span></div>
+        `;
+        functionListDiv.appendChild(div);
+    }
+
+    function removeFunctionDiv(button) {
+        button.parentElement.remove();
+    }
+
+    sendBtn.addEventListener("click", async () => {
+        const allDivs = document.querySelectorAll('.function-div');
+        for (let div of allDivs) {
+            const funcName = div.childNodes[0].textContent;
+            const inputs = [...div.querySelectorAll('.input')].map(input => input.value);
+            const outputNode = div.querySelector('.output');
+
+            // Sending data to the server
+            const jsonData = JSON.stringify({ name: funcName, inputs: inputs });
+            const response = await fetch('http://localhost:5000/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            });
+            const responseData = await response.json();
+
+            // Displaying result in the div
+            outputNode.textContent = responseData.result;
+        }
+    });
+</script>
 </body>
 </html>
