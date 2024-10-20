@@ -106,7 +106,52 @@
         { name: "Function14", numInputs: 3 },
         { name: "Function15", numInputs: 4 },
         { name: "Function16", numInputs: 5 },
+        { name: "Function17", numInputs: 2 },
+        { name: "Function18", numInputs: 3 },
+        { name: "Function19", numInputs: 4 },
+        { name: "Function20", numInputs: 5 },
+        { name: "Function21", numInputs: 3 },
+        { name: "Function22", numInputs: 4 },
+        { name: "Function23", numInputs: 5 },
+        { name: "Function24", numInputs: 2 },
+        { name: "Function25", numInputs: 3 },
+        { name: "Function26", numInputs: 4 },
     ];
+    const functionNames = [
+        "regMul",
+        "regMulII",
+        "divGame",
+        "divGameII",
+        "MixedArr",
+        "MixedArrII",
+        "polyEval",
+        "DetGame",
+        "EigenValGame",
+        "DiscGame",
+        "rootGame",
+        "PFD",
+        "IntegralGame",
+        "regMulDig",
+        "FourierSeries",
+        "EquationSystem",
+        "Mean",
+        "Stdev",
+        "diffeq",
+        "PolyDet",
+        "PolyDetFourier",
+        "curvatureGame",
+        "TGame",
+        "LineIntegralGame",
+        "DiverganceGame",
+        "LineIntegralSc"
+    ];
+
+    functions.forEach((func, index) => {
+        if (index < functionNames.length) {
+            func.name = functionNames[index]; // Change the function name
+        }
+    });
+
 
     const functionListDiv = document.getElementById("functionList");
     const addBtn = document.getElementById("addBtn");
