@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Gmait</title>
+    <link rel="icon" type="image/x-icon" href="../res/icons8-calculator-50.png">
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        #container {
+            display: flex;
+        }
+        #menu {
+            width: 200px;
+            background-color: #2e2e2e;
+            padding: 10px;
+            border-right: 1px solid #444;
+        }
+        #menu button {
+            width: 100%;
+            padding: 10px;
+            background-color: #3c3c3c;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .button{
+            width: 100%;
+            padding: 10px;
+            background-color: #3b3838;
+            border: white;
+            color: #a17810;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        #menu button:hover {
+            background-color: #5a5a5a;
+        }
+        #main {
+            flex: 1;
+            padding: 10px;
+        }
+        .function-div {
+            background-color: #333;
+            border: 1px solid #444;
+            margin-bottom: 10px;
+            padding: 10px;
+            position: relative;  /* Allow for absolute positioning of the close button */
+        }
+        .close-btn {
+            display: none;  /* Hide by default */
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .function-div:hover .close-btn {
+            display: inline;  /* Show button on hover */
+        }
+        .result {
+            margin-top: 10px;
+            background-color: #444;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="menu" style="height: auto">
+        <button id="addBtn">Add</button>
+        <button id="sendBtn">Send</button>
+            <!--  Send button will be changed to help in future       -->
+        <button id="clear">clear all</button>
+        <button id="setting">setting</button>
+    </div>
+    <div id="main">
+        <div id="functionList"></div>
+    </div>
+</div>
+<script>
+    const functions = [
+        { name: "Function1", numInputs: 5 },
+        { name: "Function2", numInputs: 4 },
+        { name: "Function3", numInputs: 2 },
+        { name: "Function4", numInputs: 5 },
+        { name: "Function5", numInputs: 3 },
+        { name: "Function6", numInputs: 4 },
+        { name: "Function7", numInputs: 2 },
+        { name: "Function8", numInputs: 3 },
+        { name: "Function9", numInputs: 4 },
+        { name: "Function10", numInputs: 5 },
+        { name: "Function11", numInputs: 3 },
+        { name: "Function12", numInputs: 4 },
+        { name: "Function13", numInputs: 2 },
+        { name: "Function14", numInputs: 3 },
+        { name: "Function15", numInputs: 4 },
+        { name: "Function16", numInputs: 5 },
+        { name: "Function17", numInputs: 2 },
+        { name: "Function18", numInputs: 3 },
+        { name: "Function19", numInputs: 4 },
+        { name: "Function20", numInputs: 5 },
+        { name: "Function21", numInputs: 3 },
+        { name: "Function22", numInputs: 4 },
+        { name: "Function23", numInputs: 5 },
+        { name: "Function24", numInputs: 2 },
+        { name: "Function25", numInputs: 3 },
+        { name: "Function26", numInputs: 4 },
+    ];
+    const functionNames = [
+        "regMul",
+        "regMulII",
+        "divGame",
+        "divGameII",
+        "MixedArr",
+        "MixedArrII",
+        "polyEval",
+        "DetGame",
+        "EigenValGame",
+        "DiscGame",
+        "rootGame",
+        "PFD",
+        "IntegralGame",
+        "regMulDig",
+        "FourierSeries",
+        "EquationSystem",
+        "Mean",
+        "Stdev",
+        "diffeq",
+        "PolyDet",
+        "PolyDetFourier",
+        "curvatureGame",
+        "TGame",
+        "LineIntegralGame",
+        "DiverganceGame",
+        "LineIntegralSc"
+    ];
+
+    functions.forEach((func, index) => {
+        if (index < functionNames.length) {
+            func.name = functionNames[index]; // Change the function name
+        }
+    });
+
+
+    const functionListDiv = document.getElementById("functionList");
+    const addBtn = document.getElementById("addBtn");
+    const sendBtn = document.getElementById("sendBtn");
+    const clearBtn = document.getElementById("clear");
+
+    const optionDiv = document.createElement("div");
+
+    functions.forEach(func => {
+        const button = document.createElement("button");
+        button.textContent = func.name;
+        button.onclick = () => addFunctionDiv(func);
+        button.style = "padding: 10px; background-color: #3b3838; border: white; color: #a17810; cursor: pointer; margin-bottom: 10px;";
+        optionDiv.appendChild(button);
+    });
+
+    functionListDiv.appendChild(optionDiv);
+
+    function addFunctionDiv(func) {
+        const div = document.createElement("div");
+        div.className = "function-div";
+        div.style = "padding: 4px; \n" +
+            "            padding: 20px;"
+        div.innerHTML = `
+            <h1s style="color: #d7d5d5; font-size: 20px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif">${func.name}</h1>
+            <button class="close-btn" onclick="removeFunctionDiv(this)">✖</button>
+            <div>
+                ${Array.from({length: func.numInputs}, (_, i) => `
+                    <label style="color: chartreuse">Input ${i + 1}:</label>
+                    <input type="text" class="input" required /><br/>
+                `).join('')}
+            </div>
+            <br>
+            <button class="send-btn" style="color: gold; background-color: #525252; padding: 4px" onclick="sendFunctionData(this)">Compute the result</button>
+            <div class="result" style="color: cyan">Result: <span class="output"></span></div>
+        `;
+        functionListDiv.appendChild(div);
+    }
+
+    function removeFunctionDiv(button) {
+        button.parentElement.remove();
+    }
+
+    function sendFunctionData(button) {
+        const div = button.parentElement; // Get the function div
+        const funcName = div.textContent.split('\n')[0];
+        console.log(funcName);
+        const inputs = [...div.querySelectorAll('.input')].map(input => input.value);
+        const outputNode = div.querySelector('.output');
+
+        // Sending data to the server
+        const jsonData = JSON.stringify({ name: funcName, inputs: inputs });
+        fetch('http://localhost:5000/execute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: jsonData
+        })
+        .then(response => response.json())
+        .then(responseData => {
+            outputNode.textContent = responseData.result;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    sendBtn.addEventListener("click", async () => {
+        const allDivs = document.querySelectorAll('.function-div');
+        for (let div of allDivs) {
+            const funcName = div.childNodes[0].textContent;
+            const inputs = [...div.querySelectorAll('.input')].map(input => input.value);
+            const outputNode = div.querySelector('.output');
+
+            // Sending data to the server
+            const jsonData = JSON.stringify({ name: funcName, inputs: inputs });
+            const response = await fetch('http://localhost:5000/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            });
+            const responseData = await response.json();
+
+            // Displaying result in the div
+            outputNode.textContent = responseData.result;
+        }
+    });
+
+    // Clear all function divisions
+    clearBtn.addEventListener("click", () => {
+        functionListDiv.innerHTML = '';  // Clear all inner HTML
+        functionListDiv.appendChild(optionDiv);
+    });
+</script>
+</body>
+</html>
