@@ -19,9 +19,9 @@ function_map = {
 @app.route('/execute', methods=['POST'])
 def execute():
     data = request.get_json()  # Get the incoming JSON data
-    function_name = data.get('name')
-    inputs = data.get('inputs')
-
+    function_name = str(data.get('name'))
+    inputs = list(data.get('inputs'))
+    print(function_name)
     # Call the appropriate function based on the name
     if function_name in function_map:
         result = function_map[function_name](inputs)

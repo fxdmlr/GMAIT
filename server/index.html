@@ -131,7 +131,7 @@
         div.style = "padding: 4px; \n" +
             "            padding: 20px;"
         div.innerHTML = `
-            <strong style="color: darkred">${func.name}</strong>
+            <h1s style="color: #d7d5d5; font-size: 20px; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif">${func.name}</h1>
             <button class="close-btn" onclick="removeFunctionDiv(this)">✖</button>
             <div>
                 ${Array.from({length: func.numInputs}, (_, i) => `
@@ -151,8 +151,9 @@
     }
 
     function sendFunctionData(button) {
-        const div = button.parentElement.parentElement;  // Get the function div
-        const funcName = div.childNodes[0].textContent;
+        const div = button.parentElement; // Get the function div
+        const funcName = div.textContent.split('\n')[0];
+        console.log(funcName);
         const inputs = [...div.querySelectorAll('.input')].map(input => input.value);
         const outputNode = div.querySelector('.output');
 
