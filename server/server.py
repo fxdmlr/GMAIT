@@ -1,10 +1,34 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import importlib.util
+
+import sys
+import os
+
+# Add the GMait directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../GMait')))
+
+import gamerunner as gr
+import gamehandler as gh
+
+
 app = Flask(__name__)
 CORS(app)
 
-def regMul(*argc, **arkw):
-    pass
+def regMul(ls):
+    md = int(ls[0])
+    rounds = int(ls[1])
+    a, b = ls[2],ls[3]
+    ranges = [int(a), int(b)]
+
+    float_mode = int(ls[4])
+    a_fl = 0
+    # if float_mode:
+    #     a_fl = int(input("Digits after floating point : "))
+    inpt_dict = {"nranges": ranges, "float_mode": float_mode, "ndigits": a_fl}
+    stats = gr.general_runner(gh.regMul, rounds, inpt_dict,md)  # multgame.regMulGame(number_of_rounds=rounds, nrange=ranges, float_mode=float_mode, after_float_point=a_fl)
+    print(str(stats))
+    return str(stats)
 
 def regMulII(*argc, **arkw):
     pass
